@@ -1,0 +1,1091 @@
+\documentclass[twoside,openright,titlepage,numbers=noenddot,%1headlines,
+               headinclude,footinclude,cleardoublepage=empty,abstract=on,
+               BCOR=23mm,paper=letter,fontsize=11pt
+               ]{scrreprt}
+\input{classicthesis-config}
+\input{base.tex}
+\addbibresource{biblio.bib}
+\title{From zero to inaccessible cardinals}
+\author{Simone Ramello}
+\date{\today} 
+\begin{document}
+\maketitle
+    \vfill
+    \noindent These notes were written down as a way of revising the material and/or clarifying the general picture. Hence, they might contain errors, omit parts or be terribly confusing. The original source is A. Andretta's book, ``\textit{Elements of Mathematical Logic}'' \cite{andretta} --- mainly chapters 13, 15, 16, 17 and 18. Any mistake or barbarian misunderstanding of the results must be traced back to myself and myself only. Every result that comes from \cite{andretta} is given the enumeration of version 3/09/2019.
+\tableofcontents
+\chapter[Axioms]{Super hanc petram aedificabo Ecclesiam meam: the axioms}
+\section{The basics}
+We fix a first-order language $\L = \{\in\}$, where $\in$ is a binary relation. The elements of our models will be called \textbf{classes}. We will distinguish certain classes, those satisfying the $\L$-formula
+\[ \mathrm{Set}(x) \define \exists y(x \in y), \]
+and we will call them \textbf{sets}. This lexicon is enough to state the first two axioms of $\MK$.
+\begin{axiom}[Extensionality]
+    \[ \forall x(x \in A \iff x \in B) \implies A = B. \]
+\end{axiom}
+\begin{remark}
+    This can be rephrased by saying that $\in$ is an extensional relation. See \ref{def:extensional}.
+\end{remark}
+\begin{axiom}[Comprehension]
+    If $\phi(x, y_1, \dots y_n)$ is an $\L$-formula, and $A$ is different from $x, y_1, \dots y_n$,
+    \[ \forall y_1 \dots y_n \exists A \forall x (x \in A \iff (\mathrm{Set}(x) \land \phi(x, y_1, \dots y_n))). \]
+\end{axiom}
+\begin{remark}
+    This allows for the definition of $R = \{x: x \notin x\}$, the (in)famous Russell class. Suppose $\mathrm{Set}(R)$: then $R \in R \iff R \notin R$, which is a contradiction. Thus, $R$ is the first of an important family of classes, the \textbf{proper classes}. We say that a class $Y$ is \textbf{proper} if $\neg \mathrm{Set}(Y)$ holds.
+\end{remark}
+While we can use Comprehension to produce all sorts of interesting classes, we can't use it to prove the existence of sets. In $\mathrm{ZFC}$, where everything is a \textit{set}, this is solved by adding an axiom stating the existence of the empty set (or, equivalently, of \textit{a} set, given (a weak form of) Comprehension). We take this latter route in $\MK$ as well.
+\begin{axiom}[Set Existence]
+    \[ \exists x \ \mathrm{Set}(x). \]
+\end{axiom}
+The following axioms are necessary to guarantee the existence of all \textit{common} set-theoretic objects. In a natural way, we say that $A \subseteq B$ if and only if $\forall x (x \in A \implies x \in B)$.
+\begin{axiom}[Powerset]
+    \[ \forall x \exists y (\mathrm{Set}(y) \land \forall z (z \subseteq x \iff z \in y)). \]
+\end{axiom}
+The $y$ in the axiom is usually denoted by $\P(x)$ and called the \textbf{powerset} of $x$.
+From this axiom follows this intuitive fact.
+\begin{proposition}
+    Suppose $A \subseteq B$, then
+    \[\mathrm{Set}(B) \implies \mathrm{Set}(A).\]
+\end{proposition}
+We can also proceed to build our first set, the \textbf{empty set} $\emptyset$. Let $E = \{ x: x \neq x \}$. By Comprehension, this a class. Now fix any set $y$: vacuously, $E \subseteq x$, hence $E$ is a set. As it has no elements, we call it the empty set $\emptyset$. \\
+Now let $\phi(z,x,y)$ be the $\L$-formula $\forall v \in z(z = x \lor z = y)$. Using Comprehension, starting from sets $x$ and $y$ this allows to produce $\{x,y\}$. Nothing, however, guarantees that this be a set.
+\begin{axiom}[Pairing]
+    \[\forall x, y (\mathrm{Set}(x) \land \mathrm{Set}(y) \implies \mathrm{Set}(\{x,y\})).\]
+\end{axiom}
+$\{ x \} = \{x,x\}$ is the \textbf{singleton} $x$. We would like a notion of \textbf{ordered pair}: starting with four sets, $x, y, v, w$ we would like to be able to build two sets $(x,y)$ and $(v,w)$ such that $(x,y) = (v,w)$ if and only if $x = v$ and $y = w$. This can be done in many different ways. The following definition is one of those.
+\begin{definition}[Kuratowski pair]
+    \[ (x,y) \define \{\{x\}, \{x,y\}\}. \]
+\end{definition}
+\begin{proposition}[Reality check]
+    \[ (x,y) = (v,w) \iff x = v \land y = w. \]
+\end{proposition}
+\begin{proof}
+    By cases: if $x = y$, then $(x,y) = \{\{x\},\{x,x\}\} = \{\{x\}\} = \{\{v\},\{v,w\}\}$ hence $\{v\} = \{v,w\} = \{x\}$, that is $x = v = w = y$. By a mirrored argument, $v = w$ implies $v = w = x = y$.\\
+    If $x \neq y$, then $v \neq w$. Since $\{x\} \in \{\{v\},\{v,w\}\}$, either $\{x \} = \{v\}$ so that $x = v$ or $\{x\} = \{v,w\}$ so that $x = v = w$, against the hypothesis, thus $x = v$. Similarly, since $\{x,y\} \in \{\{v\},\{v,w\}\}$ and $x = y = v$ can't hold, $\{x,y\} = \{v,w\} = \{x,w\}$, hence $y = w$ (since $y \neq x$). 
+\end{proof}
+The following axiom does not appear anywhere in \textit{ordinary} mathematics, but is fundamental in what will follow on ordinals. Recall that $A \cap B = \{x: x \in A \land x \in B\}$ exists by Comprehension and if $A,B$ are sets it is a set itself since $A \cap B \subseteq A,B$.
+\begin{axiom}[Foundation]
+    \[ \forall A (A \neq \emptyset \implies \exists B \in A (B \cap A = \emptyset)). \]
+\end{axiom}
+The main consequence --- and indeed the most useful one --- will be that no class $A$ can belong to itself, that is, $A \in A$ doesn't hold: since $A \in A \implies \mathrm{Set}(A)$, then $\{A\}$ would exist. By Foundation we could extract a $B \in \{A\}$ such that $B \cap \{A\} = \emptyset$. This $B$ would have no choice but to be $A$ itself, and since $A \in A$ we would get $A \in B \cap \{A\}$, a contradiction. Note that this gives Russell's class $R$ a new meaning: since no set can belong to itself, then $x \notin x$ is truly equivalent to $x = x$, hence $R$ is the \textbf{class of all sets}. It is customary to denote it by $V$ and call it the \textbf{universe of sets}. \\
+We have already defined $A \cap B$ for two classes $A,B$. More generally,
+\[  \bigcup A = \bigcup_{x \in A} x \define \{ y: \exists x\in A(y \in x) \}\]
+and 
+\[  \bigcap A = \bigcap_{x \in A} x \define \{ y: \forall x \in A(y \in x) \}. \]
+We stipulate that $A = \emptyset \implies \bigcap A = \emptyset$. Note that $\bigcap A \subseteq x$ for any $x \in A$, so it is always a set. The union case is slightly more complicated.
+\begin{axiom}[Union]
+    \[ \mathrm{Set}(A) \implies \mathrm{Set}\left(\bigcup A\right). \]
+\end{axiom}
+Note that the binary case $A \cup B$ can be retrieved as $\bigcup \{A,B\}$. By Comprehension, we can also build
+\[ A \times B \define \{(x,y): x \in A \land y \in B\}. \]
+\begin{remark}
+    $A \times B \subseteq \P(\P(A \cup B))$, hence if $A$ and $B$ are sets, so is $A \times B$.
+\end{remark}
+Insofar we have built a set, $\emptyset$, and the universe of all sets, $V$. We have no reason to believe that $V$ is infinite, or that there are infinite sets, for that matter. The first question can be easily settled. Define 
+\[ S(x) = x \cup \{x\}, \]
+the \textbf{successor} of $x$: repeating this operator allows to produce infinitely many new sets, so $V$ is infinite (in some sense). It is also \textbf{inductive}, in the sense that
+\[ \emptyset \in V \land \forall x (x \in V \implies S(x) \in V). \]
+We still have no idea if infinite sets exist, so we better settle it.
+\begin{axiom}[Infinity]
+    There exists an inductive set.
+\end{axiom}
+This is, of course, slightly stronger than simply requiring the existence of ``infinite'' sets. We call the smallest inductive set $\NN$, our friendly natural numbers set. All of its \textit{positive} elements are built from $\emptyset$ (which we can identify with $0$) with finitely many applications of $S$.
+\section{The axiom of replacement}
+The last axiom of $\MK$ is more delicate, and requires a personalized treatment. If $X,Y$ are classes, a \textbf{binary relation} is a class $R \subseteq X \times Y$. $R$ is said to be \textbf{functional} if $(x,y),(x,y') \in R \implies y = y'$. We can define auxiliary classes,
+\[ \mathrm{dom}(R) = \{x: \exists y((x,y) \in R)\}\]
+and
+\[ \mathrm{ran}(R) = \{y: \exists x((x,y) \in R)\}.\]
+The following fact sets a trend we'd like to continue.
+\begin{proposition}
+    \[ \mathrm{Set}(R) \implies \mathrm{Set}(\mathrm{dom}(R)) \land \mathrm{Set}(\mathrm{ran}(R)). \]
+\end{proposition}
+\begin{proof}
+Let $y \in \mathrm{ran}(R)$, then $y \in \{y\} \in (x,y) \in R$ for some $x$, so $y \in \bigcup(\bigcup R)$, so $\mathrm{ran}(R) \subseteq \bigcup(\bigcup(R))$. The argument for $\mathrm{dom}(R)$ is similar.
+\end{proof}
+Now let $F$ be a functional relation. If $A \subseteq \mathrm{dom}(F)$,
+\[ F[A] \define \{y: \exists x \in A((x,y) \in F)\}. \]
+If $F$ is a set, $F[A]$ is a set. If $F$ is a class and $A$ is a set, this might not be true.
+\begin{axiom}[Replacement]
+    \[ \mathrm{Set}(A) \implies \mathrm{Set}(F[A]). \]
+\end{axiom}
+We end this section with a few auxiliary lemmata on functional relations.
+\begin{lemma}
+    There is no functional relation $F$ such that $\mathrm{dom}(F) = \NN$ and $\forall n(F(S(n)) \in F(n))$.
+\end{lemma}
+\begin{proof}
+    Suppose there is, by Foundation there exists $y \in \mathrm{ran}(F)$ such that $y \cap \mathrm{ran}(F) = \emptyset$. Let $y = F(n)$ for some $n \in \NN$. Then $F(S(n)) \in F(n) \cap \mathrm{ran}(F)$.
+\end{proof}
+\begin{lemma}
+    \label{lem:unionfunction}
+    If $\F$ is a class of functions upward directed under $\subseteq$, then $\bigcup \F$ is a functional relation.
+\end{lemma}
+\begin{proof}
+    Suppose $(x,y),(x,y') \in \F$. There exist $f,g \in \F$ such that $(x,y) \in f$ and $(x,y') \in g$. Let $h \supseteq f,g$, then $(x,y),(x,y') \in h$ hence $y = y'$.
+\end{proof}
+\section{Ordered sets and ordinals}
+We call a relation $R \subseteq X^2$ \textbf{regular} if $\{ y \in X: y R x\}$ is a set for all $x \in X$. If $R = \leq$ is an order, an (almost) similar set is denoted by $\mathrm{pred}(x,X;\leq) \define \{y \in X: y < x\}$.
+Note that a regular equivalence relation $E$ allows for the existence of the quotient $X/E$. A relation is called \textbf{well-founded} if every non-empty subclass of $X$ admits an $R$-minimal element.
+\begin{definition}
+    A \textbf{well-order} is a total, well-founded and regular order.
+\end{definition}
+\marginpar{Cos'è una choice class-function?}
+\begin{remark}
+    Note that if we define a \textbf{choice function on $X$} to be a function $f: \P(X)\setminus\{\emptyset\} \to X$ such that $f(Y) \in Y$ for all non-empty $Y \subseteq X$, having a well-order on $X$ implies the existence of such a function.
+\end{remark}
+Well-orders are extraordinarily rigid.
+\begin{proposition}[\cite{andretta}, Theorem 15.3]
+    Let $(A, \leq)$ be a well-ordered class. Then,
+    \begin{enumerate}
+        \item if $f: A\to A$ is increasing, then for all $a \in A (a \leq f(a))$ and if $f$ is also bijective then $f = \mathrm{id}_A$,
+        \item if $(A, \leq)$ and $(B, \preceq)$ are isomorphic well-ordered classes, then the isomorphism is unique,
+        \item if $a \in A$, then $(A, \leq) \not\cong (\mathrm{pred}(a,A;\leq),\leq)$.
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    \begin{enumerate}
+        \item let $b$ be the least element of $\{a \in A: a > f(a)\}$. Then $b > f(b)$, hence $f(b) \leq f(f(b))$ by minimality. However, since $f$ is increasing we have that $f(b) > f(f(b))$, a contradiction. If $f$ is also bijective, then $\forall a \in A(a \leq f^{-1}(a))$ holds as well, so $f(a) \leq f^{-1}(f(a)) = a$, hence $f(a) = a$.
+        \item suppose $f,g: A \isom B$. Then $g^{-1} \circ f$ is bijective and increasing on $A$, hence $g^{-1} \circ f = \mathrm{id}_A$, so that $f = g$.
+        \item suppose they were and let $f: A \isom \mathrm{pred}(a,A;\leq)$, then as of $1$ we would have $a \leq f(a)$, a contradiction.
+    \end{enumerate}
+\end{proof}
+Call a class $A$ \textbf{transitive} if $\forall a \forall x((a \in A \land x \in a) \implies x \in A)$.
+\begin{definition}
+    An \textbf{ordinal} is a transitive set whose elements are transitive as well. $\Ord$ is the class of all ordinals.
+\end{definition}
+\begin{proposition}[\cite{andretta}, Proposition 15.6(a)]
+    If $\alpha$ is transitive, then $S(\alpha)$ is transitive. In particular, if $\alpha \in \Ord$ then $S(\alpha) \in \Ord$.
+\end{proposition}
+\begin{proof}
+    Let $x \in S(\alpha)$ and $a \in x$. Either $x = \alpha$, then $a \in \alpha \subseteq S(\alpha)$, or $x \in \alpha$ and by transitivity again $a \in \alpha$. \\
+    If $\alpha$ is an ordinal, then an element of $S(\alpha)$ is either $\alpha$ itself, which is transitive, or an element of $\alpha$, which is again transitive. Hence, $S(\alpha)$ is an ordinal. 
+\end{proof}
+\begin{proposition}[\cite{andretta}, Proposition 15.6(a)]
+    If $x$ is transitive, $\cup x$ is transitive. In particular, if $x \subseteq \Ord$ then $\cup x$ is an ordinal.
+\end{proposition}
+\begin{proof}
+    Suppose $y \in \cup x$ and $a \in y$. Recall that $y \in \cup x \iff \exists b \in x \land y \in b$. By transitivity, $y \in x$, hence $a \in y \in x$ and by definition $a \in \cup x$. \\
+    Now let $x \subseteq \Ord$ and $y \in \cup x$. We need to show that $y$ is transitive, so let $a \in y$. By definition, $y \in \cup x \iff \exists b \in x \land y \in b$: as $x$ is a set of ordinals, such $b$ is an ordinal and hence $y$ is a transitive set.
+\end{proof}
+\begin{proposition}[\cite{andretta}, Proposition 15.6(b)]
+    $\alpha \in \Ord \implies \alpha \subseteq \Ord$.
+\end{proposition}
+\begin{proof}
+    Let $\beta \in \alpha$: we know $\beta$ is transitive, so if we take $y \in \beta$, $y \in \alpha$ and since $\alpha$ is an ordinal, $y$ is transitive. This means that $\beta$ is an ordinal as well.
+\end{proof}
+\begin{theorem}[Burali-Forti paradox, \cite{andretta}, Proposition 15.7]
+    $\Ord$ is a proper class.
+\end{theorem}
+\begin{proof}
+    $\Ord$ is transitive and its elements are transitive, so if it were a set it would be an ordinal, hence we would have $\Ord \in \Ord$, a contradiction.
+\end{proof}
+\begin{theorem}[Ordinal trichotomy, \cite{andretta}, Theorem 15.8]
+    For every $\alpha,\beta \in \Ord$, we have that
+    \[ \alpha \in \beta \lor \beta = \alpha \lor \beta \in \alpha. \]
+\end{theorem}
+\begin{proof}
+    Let
+    \[ A = \{\alpha \in \Ord: \exists \beta(\beta \notin \alpha \land \beta \neq \alpha \land \alpha \notin \beta)\} \]
+    be the class of ordinals that violate the trichotomy. Suppose it were non-empty: by foundation, there exists $\overline{\alpha} \in A$ such that $\overline{\alpha} \cap A = \emptyset$. Since $\overline{\alpha} \in A$,
+    \[ B = \{\beta \in \Ord: \beta \notin \overline{\alpha} \land \beta \neq \overline{\alpha} \land \overline{\alpha} \notin \beta\}\]
+    is non-empty, thus by foundation we once again can pick $\overline{\beta} \in B$ such that $\overline{\beta} \cap B = \emptyset$. Recall that this means that
+    \[ \overline{\beta} \notin \overline{\alpha} \land \overline{\beta} \neq \overline{\alpha} \land \overline{\alpha} \notin \overline{\beta}. \]
+    Now let $\gamma \in \overline{\alpha}$: this means that $\gamma \notin A$, so $\gamma$ satisfies the ordinal trichotomy and hence $\gamma \in \overline{\beta}$ or $\gamma = \overline{\beta}$ o$ \overline{\beta} \in \gamma$. The only viable option is $\gamma \in \overline{\beta}$, as any other would contradict our hypotheses. By the arbitrariety of $\gamma$, $\overbrace{\alpha} \subseteq \overline{\beta}$. A mirroring argument shows that $\overline{\beta} \subseteq \overline{\alpha}$, hence $\overline{\alpha} = \overline{\beta}$, a contradiction.
+\end{proof}
+We denote by $\alpha < \beta$ the well-order induced on $\Ord$ by the relation $\alpha \in \beta$. The rigidity transfers to ordinals:
+\begin{proposition}[\cite{andretta}, Proposition 15.10]
+    Let $\alpha,\beta$ be ordinals, then
+    \begin{enumerate}
+        \item if $f: \alpha \to \beta$ is increasing, then for every $\gamma \in \alpha$ we have $\gamma \leq f(\gamma)$ and $\alpha \leq \beta$,
+        \item if $f: \alpha \to \beta$ is an isomorphism, then $f$ is the identity and $\alpha = \beta$.    
+    \end{enumerate}
+\end{proposition}
+\begin{proposition}[\cite{andretta}, Proposition 15.13]
+    If $A \subseteq \Ord$ is non-empty, then $\min(A) = \bigcap A$.
+\end{proposition}
+\begin{proof}
+    Let $\alpha \in A$ such that $\alpha \cap A = \emptyset$, by foundation. By trichotomy, for each $\beta \in A$ we have that $\beta \leq \alpha$, hence $\alpha = \min(A)$. By transitivity, $\beta \leq \alpha \implies \beta \subseteq \alpha$ and hence $\min(A) = \bigcap A$.
+\end{proof}
+The following statement is a specific instance of a previous result, since $\Ord$ is a well-ordered class.
+\begin{proposition}[\cite{andretta}, Corollary 15.14]
+    There is no descending countable sequence of ordinals, i.e., there is no $f: \NN \to \Ord$ such that $\forall n(f(S(n)) < f(n))$.
+\end{proposition}
+\begin{proposition}[\cite{andretta}, Lemma 15.15]
+    $\NN \subseteq \Ord$. Moreover, $\NN$ is an ordinal itself.
+\end{proposition}
+\begin{proof}
+    $\Ord$ is an inductive class, so $\NN \subseteq \Ord$. It remains to show that $\NN$ is transitive: suppose
+    \[ X = \{n \in \NN: \exists x \in n(x \notin \NN)\} \]
+    were non-empty, let $m$ be its minimum. Since $m = S(k)$, we have that $k \notin X$, hence for all $n \in k$, $n \in \NN$. Now fix $y \in m$: either $y = k$, hence $y \in \NN$, or $y \in k$, hence $y \in \NN$. In both cases this contradicts $m \in X$.
+\end{proof}
+\subsection{Order types}
+Let $(X, \preceq)$ be a well-ordered class. We will build an isomorphism between $(X, \preceq)$ and a unique ordinal or, if $X$ is proper, $\Ord$ itself. \\
+First, let
+\[ A = \{ \alpha \in \Ord: \exists x \in X((\alpha, leq) \cong (\mathrm{pred}(x,X;\preceq),\preceq))\}. \]
+\begin{remark}
+    $A$ is a transitive class of ordinals: if $\alpha \in A$, as witnessed by $f: \alpha \to \mathrm{pred}(x,X;\preceq)$, and $\beta in \alpha$, note that $f \vert_{\beta}: \beta \to \mathrm{pred}(f(\beta),X;\preceq)$ is still an isomorphism, hence $\beta \in A$. Thus, either $A$ is an ordinal or $A = \Ord$.
+\end{remark}
+Let $F: A \to X$ be the class function that sends $\alpha$ to the unique $x \in X$ such that $(\alpha, \leq) \cong (\mathrm{pred}(x),\preceq)$. If $\beta \in \mathrm{ran}(F)$ and $\alpha < \beta$, by restricting the witnessing isomorphism we get that $\alpha \in \mathrm{ran}(F)$ as well: $\mathrm{ran}(F)$ is an initial segment of $X$. Suppose it were proper, so that $\mathrm{ran}(F) = \mathrm{pred}(x)$ for some $x \in X$. Since restricting $F$ gives a bijection between $A$ and a set, $A \in \Ord$ and hence $A \in A$, a contradiction. $F$ is thus surjective, in fact an order isomorphism.
+\begin{definition}
+    $(A, \leq)$ is called the \textbf{order type} of $(X,\preceq)$ and denoted $\ot(X,\preceq)$.
+\end{definition}
+\begin{theorem}[\cite{andretta}, Theorem 15.11]
+    Each well-ordered set is uniquely isomorphic to a unique ordinal, and each well-ordered class is uniquely isomorphic to $\Ord$.
+\end{theorem}
+Note that the ordinal trichotomy translates in the following theorem.
+\begin{theorem}[\cite{andretta}, Theorem 15.12]
+    Given two well-ordered classes $A$ and $B$, either they are isomorphic, or one is isomorphic to a proper initial segment of the other. If they are proper classes, they are isomorphic.
+\end{theorem}
+\begin{definition}
+    The unique isomorphic between a class and its order type is the \textbf{enumerating function}.
+\end{definition}
+\subsection{Limit and successor ordinals}
+Say that $\alpha$ is \textbf{successor} if $\alpha = S(\beta)$ for some ordinal $\beta$. Say that $\alpha$ is \textbf{limit} otherwise.
+\begin{theorem}[\cite{andretta}, Theorem 15.16]
+    $\NN$ is the smallest limit ordinal. As such, it is denoted by $\omega$.
+\end{theorem}
+\begin{proof}
+    Suppose $\omega = S(n)$ for some $n < \omega$, then $\omega \in \omega$, a contradiction.
+\end{proof}
+The following lemmata provide the useful properties of ordinal numbers.
+\begin{lemma}[\cite{andretta}, Proposition 15.17(a)]
+    \[ \alpha < \beta \iff \alpha \subset \beta. \]
+\end{lemma}
+\begin{proof}
+    $\implies$: if $\gamma \in \alpha$, by transitivity $\gamma \in \beta$, hence $\alpha \subset \beta$. \\
+    $\impliedby$: suppose $\beta \in \alpha$, then $\beta \subset \alpha$, leading to $\alpha = \beta$, a contradiction.
+\end{proof}
+Similarly, we prove that
+\begin{lemma}[\cite{andretta}, Proposition 15.17(b)]
+    \[ \alpha \leq \beta \iff \alpha \subseteq \beta. \]
+\end{lemma}
+\begin{lemma}[\cite{andretta}, Proposition 15.17(c)]
+    \[ \alpha < \beta \iff S(\alpha) \leq \beta. \]
+\end{lemma}
+\begin{proof}
+    $\implies$: let $\gamma \in S(\alpha)$, then either $\gamma = \alpha \in \beta$, o$ \gamma \in \alpha \in \beta$ by transitivity, so $S(\alpha) \subseteq \beta$ and then $S(\alpha) \leq \beta$ as required. \\
+    $\impliedby$: if $S(\alpha) \leq \beta$, then either $S(\alpha) = \beta$, hence $\alpha \in \beta$, or $S(\alpha) \in \beta$, hence $\alpha \in S(\alpha) \in \beta$ by transitivity.
+\end{proof}
+\begin{lemma}[\cite{andretta}, Proposition 15.17(d)]
+    \[ \alpha < \beta \iff S(\alpha) < S(\beta). \]
+\end{lemma}
+\begin{proof}
+    $\implies$: if $\alpha \in \beta$, then $S(\alpha) \leq \beta < S(\beta)$. \\
+    $\impliedby$: if $S(\alpha) < S(\beta)$, then $\alpha \in S(\alpha) \in S(\beta)$ hence either $\alpha = \beta$, against $S(\alpha) < S(\beta)$, or $\alpha \in \beta$.
+\end{proof}
+\begin{lemma}[\cite{andretta}, Proposition 15.17(e)]
+    \[ x \subseteq \alpha \implies (\cup x = \alpha \lor \cup x < \alpha). \]
+\end{lemma}
+\begin{proof}
+    Suppose $\alpha \in \cup x$, then $\exists \beta \in x$ such that $\alpha \in \beta \in x$, hence $\alpha \in x \subseteq \alpha$, so $\alpha \in \alpha$, a contradiction.
+\end{proof}
+\begin{lemma}[\cite{andretta}, Proposition 15.17(f)]
+    \[ \cup(S(\alpha)) = \alpha. \]
+\end{lemma}
+\begin{proof}
+    If $\beta \in \alpha$, then by definition $\beta \in \cup(S(\alpha))$. If $\beta \in \cup(S(\alpha))$, then there exists $\tau \in S(\alpha)$ such that $\beta \in \tau$. Either $\tau = \alpha$, so we're done, or $\tau \in \alpha$, and by transitivity we are done again.
+\end{proof}
+\begin{lemma}[\cite{andretta}, Proposition 15.17(g)]
+    \[ \alpha = S(\cup\alpha) \lor \alpha = \cup\alpha. \]
+\end{lemma}
+\begin{proof}
+    First note that $\alpha = \cup S(\alpha) \geq \cup\alpha$. Suppose $\cup\alpha < \alpha$, then $S(\cup\alpha) \leq \alpha$. Towards a contradiction let $S(\cup\alpha) < \alpha$: we then have $\cup\alpha \in S(\cup\alpha) \in \alpha$. By definition of $\cup\alpha$, this means that $\cup\alpha \in \cup\alpha$, a contradiction.
+\end{proof}
+\begin{lemma}[\cite{andretta}, Proposition 15.17(h)]
+    \[ \cup\alpha = \alpha \iff (\alpha = 0 \lor \alpha \ \text{limit}) \iff (\alpha,<) \ \text{has no maximum}. \]
+\end{lemma}
+\begin{proof}
+    Let $\cup\alpha = \alpha$ and $\alpha > 0$. Suppose $\alpha = S(\beta)$, then $\alpha = \cup\alpha = \cup S(\beta) = \beta < \alpha$, a contradiction. \\
+    If $\alpha = 0$, then $(\alpha, <)$ has trivially no maximum. If $\alpha$ is limit, suppose there exists $\beta = \max(\alpha, <)$, and consider $S(\beta)$. $S(\beta)$ can't be $\alpha$ nor bigger, otherwise $\alpha = \beta < \alpha$ or $\alpha < \beta < \alpha$, both contradictions. Hence $S(\beta) < \alpha$, however $S(\beta) > \beta$, a contradiction. \\
+    At last, let $(\alpha, <)$ have no maximum and suppose $\cup \alpha < \alpha$. By a previous lemma, $\alpha = S(\cup\alpha)$, a contradiction.
+\end{proof}
+\begin{lemma}[\cite{andretta}, Proposition 15.18]
+    If $A \subseteq \Ord$ is a set, then $\cup A = \sup A$.
+\end{lemma}
+\begin{proof}
+    Recall that $\cup A$ is an ordinal. Since $\leq = \subseteq$ on the ordinals, $\cup A$ is an upper bound for $A$. By definition of union, it is the smallest such.
+\end{proof}
+\subsection{The topology on the ordinals}
+$\Ord$ is a proper class, so the concept of topology on it doesn't make sense. Still, one can mimick topological information by inducing the order-topology on each ordinal. More precisely, let $\Omega$ be either an ordinal or $\Ord$ and $A \subseteq \Omega$. We say that $A$ is \textbf{open} if for any $\alpha \in A$ there exist $\beta < \alpha < \gamma$ such that $\alpha \in (\beta, \gamma) \subseteq A$. $A$ is \textbf{closed} if $\Omega \setminus A$ is open or, equivalently, if for every ordinal $\lambda \in \Omega$, $\sup(\lambda \cap A) = \lambda \implies \lambda \in A$. \\
+Note that successor ordinals are isolated, so continuity is easily satisfied for any function $f: \Omega \to \Ord$. On the other hand, an \textit{increasing} function $f$ is continuous at a limit ordinal $\gamma$ if and only if
+    \[ f(\gamma) = \sup_{\mu < \gamma} f(\mu) \land f(\gamma) = \sup_{\mu \in X} f(\mu) \]
+for every $X \subseteq \gamma$ such that $\sup X = \gamma$.
+\begin{corollary}
+    If $f: \Omega \to \Ord$ is increasing and continuous, then for every $\lambda \in \Omega$ limit, $f(\lambda)$ is limit.
+\end{corollary}
+\begin{proof}
+    Suppose $f(\lambda) = S(\beta)$ for some $\beta$, then (by definition of $\sup$) there would be a $\mu$ such that $\beta < f(\mu) < f(\lambda)$, which is a contradiction.
+\end{proof}
+\section{Cardinality and the cardinals}
+\begin{definition}
+    Suppose $X$ is well-orderable, then $\{\alpha \in \Ord: \exists f: \alpha \to X \ \text{bijective}\}$ is non-empty, as witnessed by $\ot(X)$. Let $\vert X \vert$ be the minimum of this class, and call it the \textbf{cardinality of $X$}.
+\end{definition}
+We abstract this definition.
+\begin{definition}
+    A \textbf{cardinal number} is an ordinal that is not in bijection with any of its predecessors.
+\end{definition}
+\begin{proposition}
+    Any cardinality is a cardinal.
+\end{proposition}
+\begin{proof}
+    A bijection with a smaller ordinal would go against the minimality of $\vert X \vert$.
+\end{proof}
+Note that, under the Axiom of Choice, every set has a cardinality. In models where the Axiom of Choice fails, a proper notion of cardinality is harder to define.
+\subsection{The Cantor-Schroeder-Bernstein theorem}
+\begin{proposition}
+    Let $(P, \leq)$ be a complete lattice and $f: P \to P$ be increasing. Then $f$ admits a fixed point.
+\end{proposition}
+\begin{proof}
+    Let $A = \{x \in P: x \leq f(x)\}$, and let $a = \sup A$. Let $x \in A$, then $x \leq f(x) \leq f(a)$ by monotonicity, so $f(a)$ is an upper bound and thus $a \leq f(a)$. By monotonicity, $f(a) \leq f(f(a))$, so $f(a) \in A$ and then $f(a) \leq a$.
+\end{proof}
+\begin{theorem}[Cantor-Schroeder-Bernstein]
+    Let $f: X \to Y$ and $g: Y \to X$ be injections. Then there is a bijection $h: X \to Y$.
+\end{theorem}
+\begin{proof}
+    Let $\phi(A) = X \setminus g[Y \setminus f[A]]$ be a function from $\P(X)$ to itself. As $\P(X)$ is a complete lattice and $\phi$ is increasing, there exists $Z \subseteq X$ such that
+    \[ X \setminus g[Y \setminus f[Z]] = Z \iff X \setminus Z = g[Y \setminus f[Z]], \]
+    that allows us to define
+    \begin{equation*}
+    h(x) \define
+     \begin{cases}
+        f(x) & x \in Z, \\
+        g^{-1}(x) & x \notin Z,
+    \end{cases}
+    \end{equation*}
+    the required bijection.
+\end{proof}
+\begin{proposition}[\cite{andretta}, Proposition 15.21(a)]
+    \label{prop:cardinaliuguali}
+    Let $\kappa$ and $\lambda$ be cardinals, then $\kappa = \lambda$ if and only if there is a bijection between them, and $\kappa \leq \lambda$ if and only if there is an injection between them.
+\end{proposition}
+\begin{proof}
+    Suppose $f: \kappa \to \lambda$ is a bijection, and towards a contradiction $\kappa < \lambda$: then $\lambda$ would be in bijection with a smaller ordinal. If they are equal, the identity serves as a bijection. \\
+    Now let $\kappa \leq \lambda$: the immersion is injective, so we're done. If, on the other hand, there exists an injection from $\kappa$ to $\lambda$ and $\kappa > \lambda$, then $\mathrm{id}: \lambda \to \kappa$ is an injective and by the Cantor-Schroeder-Bernstein theorem we can find a bijection, hence $\kappa = \lambda$.
+\end{proof}
+Cardinals are never successor ordinals. The reason for that is the following fact.
+\begin{proposition}[\cite{andretta}, Proposition 15.22(a)]
+    Let $\alpha$ be an ordinal, then $\vert S(\alpha) = \alpha\vert$.
+\end{proposition}
+\begin{proof}
+    Let $f: S(\alpha) \to \alpha$ be
+    \begin{equation*}
+        f(x) = 
+        \begin{cases}
+            x+1 & x < \omega, \\
+            0 & x = \alpha, \\
+            x & \omega \leq x < \alpha.
+        \end{cases}
+    \end{equation*}
+    This is a bijection.
+\end{proof}
+The following fact is a direct rephrasing of \ref{prop:cardinaliuguali}.
+\begin{proposition}[\cite{andretta}, Proposition 15.22(c)]
+    For any $\alpha,\beta$ ordinals, $\vert \alpha \vert = \vert \beta \vert$ if and only if there is a bijection between them, and $\vert \alpha\vert \leq \vert \beta \vert$ if and only if there is an injection from $\alpha$ to $\beta$.
+\end{proposition}
+Lastly, a set-theoretic version of the ``cops theorem''.
+\begin{proposition}
+    Let $\alpha,\beta$ be ordinals, if $\vert \alpha\vert \leq \beta \leq \alpha$, then $\vert \alpha \vert = \vert \beta \vert$.
+\end{proposition}
+\begin{proof}
+    Let $f: \alpha \to \vert \alpha \vert$ be the witness. Note that, considered as a function from $\alpha$ to $\beta$, $f$ is injective. On the other hand, there is an injection from $\beta$ to $\alpha$. By the Cantor-Schroeder-Bernstein theorem, there is a bijection and hence $\vert \alpha \vert = \vert \beta \vert$.
+\end{proof}
+\begin{corollary}[\cite{andretta}, Theorem 15.25]
+    If $X$ is a set of cardinals, then $\sup X$ is a cardinal.
+\end{corollary}
+\begin{proof}
+    Suppose $\vert \sup X \vert < \sup X$: by definition, there exists $\kappa \in X$ such that $\vert \sup X \vert < \kappa \leq \lambda$, and thus $\vert \sup X \vert = \vert \kappa \vert$. If the former is not a cardinal then neither is the latter, a contradiction.
+\end{proof}
+\begin{corollary}[\cite{andretta}, Corollary 15.26]
+    $\mathrm{Card}$ is a proper class.
+\end{corollary}
+\subsection{The Hartogs' numbers}
+As we have already said, the successor of a cardinal (in the sense of $\Ord$) is not a cardinal. We wish to create a proper notion of successor, of ``smaller subsequent cardinal''. \\
+Starting with a set $X$, fix the family of ordinals that inject into $X$
+\[ \A = \{(\alpha, f): \alpha \in \Ord \land f: \alpha \to X \ \text{injective}\}. \]
+Each of these couples can induce a well-order on $\mathrm{ran}(f)$. Let
+\[ x \leq_{\alpha, f} y \iff f^{-1}(x) \leq f^{-1}(y), \]
+then sort of trivially $f: (\alpha, \leq) \to (\mathrm{ran}(f),\leq_{\alpha,f})$ is an isomorphism. We wish to show that $\A$ is a set. Note that the assignment $(\alpha, f) \to \leq_{\alpha, f} \subseteq X^2$ is injective (if $\leq_{\alpha,f} = \leq_{\beta,g}$, the function $g^{-1}\circ f$ is an isomorphism and hence $\alpha=\beta$ and $f = g$, by the rigidity properties of the ordinals). Hence $\A$ injects into $\P(x^2)$, and is thus a set. By projecting on $\Ord$ one obtains
+\[ \B = \{\alpha \in \Ord: \exists f: \alpha \to X \ \text{injective}\}, \]
+which is transitive (just notice that restricting the injection gives yet another injection) and hence an ordinal. Call it $\vert X \vert^{+}$, or alternatively the \textbf{Hartogs' number of $X$}.
+\begin{proposition}[\cite{andretta}, Theorem 15.23]
+    For each set $X$, $\vert X \vert^{+}$ is a cardinal.
+\end{proposition}
+\begin{proof}
+    Suppose that $\vert \vert X \vert^{+}\vert < \vert X \vert^{+}$, then there is an injection $f: \vert \vert X \vert^{+}\vert \to X$. Composing with the bijection $\vert X \vert^{+} \to \vert \vert X \vert^{+}\vert$ we get an injection $\vert X \vert^{+} \to X$, hence $\vert X \vert^{+} \in \vert X \vert^{+}$, a contradiction. 
+\end{proof}
+The inverse of the injection from $\A$ to $\P(X^2)$, composed with the projection onto $\vert X \vert^{+}$, gives a surjection $\P(X^2) \to \vert X \vert^{+}$.
+\chapter[Recursion]{To understand recursion, you must first understand recursion}
+\section{The baby recursion theorem}
+\begin{theorem}
+    Let $A$ be a class, $a \in A$ and $g: \omega \times A \to A$ be a complete functional relation. Then there exists a unique $f: \omega \to A$ such that
+    \begin{equation*}
+        \begin{cases}
+            f(0) &= a, \\
+            f(n+1) &= g(n,f(n)).
+        \end{cases}
+    \end{equation*}
+\end{theorem}
+\begin{proof}
+    The proof proceeds by approximations. Let
+    \begin{align*}
+    \A = \{h \in {}^{<\omega}A: \mathrm{dom}(h) > 0 \implies h(0) = a &\land \\ \forall n(n+1 < \mathrm{dom}(h) \implies h(n+1) &= g(n, h(n))) \}.
+    \end{align*}
+    We show that $\A$ is closed under binary unions, then show that $\bigcup \A$ is a functional relation with domain $\omega$. \\
+    First of all, suppose $h,k \in \A$, and suppose $h \cup k$ is not a function, so there exists a minimal $n \in \mathrm{dom}(h) \cap \mathrm{dom}(k)$ such that $h(n) \neq k(n)$. Since $n > 0$, let $n = S(m)$: we have that $h(n) = f(n,h(m)) = f(n,k(m)) = k(n)$ by the minimality of $n$, leading to a contradiction. \\
+    By \ref{lem:unionfunction}, $f = \bigcup \A$ is a functional relation. Notice that $f \subseteq \omega \times A$ implies that $f$ is truly a function. For each $S(n) \in \mathrm{dom}(f)$, we have that $f(S(n)) = h(S(n)) = g(n,h(n)) = g(n,f(n))$ for some $h \in \A$; since $\{(0,a)\} \in \A$, we also get that $f(0) = a$, satisfying all of the hypotheses minus the requirement on the domain. \\
+    Towards a contradiction, suppose $\mathrm{dom}(f) \subset \omega$: let $n$ be the least element of $\omega \setminus \mathrm{dom}(f)$, and since $n > 0$ we have that $n = S(m)$ for some $m \in \omega$. Then $f \cup \{(n, f(n,g(m)))\} \in \A$ and thus $n \in \mathrm{dom}(f)$. \\
+    The final claim is that such a $f$ is unique: if there were another $f'$ satisfying the same requirements and $f \neq f'$, we could pick the minimal $n$ such that $f(n) \neq f'(n)$ and notice that $n > 0$, hence $n = S(m)$ for some $m$, but then $f(n) = g(n,f(m)) = g(n,f'(m)) = f'(n)$, a contradiction.
+\end{proof}
+The baby recursion theorem, despite the name, is very powerful. We will see an application.
+\subsection{The transitive closure of a relation}
+Let $X$ be a class, and $R \subseteq X^2$. If we imagine this relationship like a graph, where an edge is drawn between two points $x$ and $y$ if and only if $R(x,y)$ holds, the following relationship --- called the \textbf{transitive closure of $R$}, or $\tilde{R}$ --- would be precisely the relationship ``there is a finite path between two points''.
+\begin{definition}
+    \begin{align*}
+        \tilde{R} \define \{ (x,y) \in X^2: \exists n > 0 \exists f \in {}^{S(n)}X & \\
+        [x = f(0) \land y = f(n) \land& \forall k < n \ (f(k), f(S(k)) \in R]. \}
+    \end{align*}
+\end{definition}
+\begin{remark}
+    The use of the recursion theorem is somewhat subtle. Let $A = V$ and 
+    \[ g(n,Y) = Y \cup \{ (x,y) \in X^2: \exists \overline{x} \in X ((x,\overline{x}) \in Y \land (\overline{x},y) \in R) \}. \]
+    By setting $a = R$, the recursion theorem allows for the existence of 
+    \[ f(n) = \{ (x,y): \exists x_1,\dots x_n ((x,x_1) \in R \land \forall i < n (x_i,x_{i+1}) \in R \land (x_n,y) \in R) \} \]
+    and then $\tilde{R} = \bigcup_{n < \omega} f(n)$.
+\end{remark}
+While being much nicer, in some sense, $\tilde{R}$ still retains most of the properties of $R$, and --- perhaps surprisingly --- the converse is true as well.
+\begin{proposition}
+    Let $R \subseteq X^2$,
+    \begin{enumerate}
+        \item $R$ is well-founded if and only if $\tilde{R}$ is well-founded,
+        \item $R$ is regular if and only if $\tilde{R}$ is regular.
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    ($1, \impliedby$): $R \subseteq \tilde{R}$, so any $\tilde{R}$-minimal element is also $R$-minimal. \\
+    ($1, \implies$): suppose $Y \subseteq X$ is a nonempty subclass and consider $\overline{Y} \subseteq X$ where $x \in \overline{Y}$ if and only if there is a finite path from $Y$ to $Y$ that goes through $x$. Fix a $R$-minimal element $\overline{x}$ of $\overline{Y}$. It can't be an element of $\overline{Y} \sm Y$, so it must belong to $Y$. Fix another element of $Y$, say $y$, and suppose $y \tilde{R} \overline{x}$. By definition, this means that there is a path $\langle z_0, \dots z_n \rangle$ from $y$ to $\overline{x}$. As $y, \overline{x} \in Y$, this path is a subset of $\overline{Y}$ and $z_{n-1} R z_n = \overline{x}$, against its $R$-minimality. \\
+    ($2, \impliedby$): note that $\{y \in X: y R x\} \subseteq \{y \in X: y \tilde{R} x\}$, so if $\tilde{R}$ is regular, $R$ is regular as well. \\
+    ($2, \implies$): the idea is the same as in the previous remark. Fix some $x \in X$, then $\{y \in X: y \tilde{R} x\} = \bigcup_{n < \omega} S_n$ where the sequence $S_n$ is built recursively by setting $S_0 = \{y \in X: y R x\}$ and $S_{n+1} = \{y \in X: \exists z \in S_n (y R z)\}$.
+\end{proof}
+\section{The actual recursion theorem}
+\begin{theorem}
+    Let $Z,X$ be classes, $R \subseteq X^2$ be well-founded, irreflexive and regular, and $G: X \times Z \times V \to V$ be a functional relation. Then there exists a unique $F: X \times Z \to V$ such that
+    \[ F(x,z) = G(x,z, F\vert_{\{(y,z): y R x\}}). \]
+\end{theorem}
+\begin{proof}
+    The proof procedes by approximations from ``below''. Define $p \in \G$ if and only if:
+    \begin{enumerate}
+        \item $\mathrm{dom}(p) \subseteq X \times Z,$
+        \item for all $z \in Z$ and $x \in X$, if $(x,z) \in \mathrm{dom}(p)$ then $\{ (y,z): y R x \} \subseteq \mathrm{dom}(p)$,
+        \item for all $z \in Z$ and $x \in X$, $p(x,z) = G(x,z, p\vert_{\{(y,z): y R x\}})$.
+    \end{enumerate}
+    We claim that for any $p, q \in \G$, $p \cup q \in \G$. Suppose not: then
+    \[A = \{ x \in X: \exists z \in Z((x,z) \in \mathrm{dom}(p) \cap \mathrm{dom}(q) \land p(x,z) \neq q(x,z))\} \]
+    is non-empty hence, by well-foundedness of $R$, admits a minimum $\overline{x}$. Let $\overline{z}$ be the witness of $\overline{x} \in A$. By definition,
+    \[ p(\overline{x},\overline{z}) = G(\overline{x},\overline{z}, p\vert_{\{(y,\overline{z}): y R \overline{x}\}}) \]
+    by minimality of $\overline{x}$, 
+    \[p\vert_{\{(y,\overline{z}): y R \overline{x}\}} = q\vert_{\{(y,\overline{z}): y R \overline{x}\}}\]
+    hence
+    \[ p(\overline{x},\overline{z}) = G(\overline{x},\overline{z}, p\vert_{\{(y,\overline{z}): y R \overline{x}\}}) = G(\overline{x},\overline{z}, q\vert_{\{(y,\overline{z}): y R \overline{x}\}}) = q(\overline{x},\overline{z}),\]
+    a contradiction. Hence $\G$ is closed under $\cup$, so $F = \bigcup \G$ is a functional relation. Suppose $X \times Z \sm \mathrm{dom}(F) \neq \emptyset$, then
+    \[ \{x \in X: \exists z \in Z((x,z) \notin \mathrm{dom}(F)\} \neq \emptyset:\]
+    fix a $R$-minimal $\overline{x}$. Let $\overline{z}$ be a witness for it. We wish to find an element of $\G$ whose domain contains $(\overline{x},\overline{z})$: in order to do so, we need a function whose domain contains all of the $y$s such that $y R \overline{x}$, but also all of the $w$s such that $w R y R \overline{x}$ and so on, so we first of all fix
+    \[ p' = F\vert_{\{y \in X: y \tilde{R} \overline{x}\}}.\]
+    Notice that if $R$ is regular so is $\tilde{R}$. As of now, $p'$ does not have a value for $(\overline{x},\overline{z})$. Set
+    \[ p'' = p' \cup \{(\overline{x},\overline{z},G(\overline{x},\overline{z},p'\vert_{\{(y,\overline{z}): y R \overline{x} \}}), \]
+    we get that $p'' \in \G$ so $(\overline{x},\overline{z}) \in \mathrm{F}$, a contradiction.
+\end{proof}
+\subsection{The rank of a well-founded relation}
+Fix a well-founded, irreflexive, regular relation $R$ on a class $X$.
+\begin{definition}
+    The \textbf{rank of $R$ on $X$} is the $\Ord$-valued function
+    \[ \rho_{R,X}(x) = \sup \{ S(\rho_{R,X}(y)): y R x \},\]
+    for all $x \in X$.
+\end{definition}
+\begin{proposition}
+    $\ran(\rho_{R,X})$ is a transitive class of ordinals. Hence, either it is an ordinal or it is $\Ord$.
+\end{proposition}
+\begin{proof}
+    $\ran(\rho_{R,X}) \subseteq \Ord$ by definition. Moreover, towards a contradiction let $x$ be $R$-minimal such that there is a $\alpha \in \rho_{R,X}(x)$ but $\alpha \in \ran(\rho_{R,X})$: there exists a $y R x$ such that $\alpha \in S(\rho_{R,X}(y))$, so either $\alpha \in \rho_{R,X}(y)$ or $\alpha = \rho_{R,X}(y)$. Per the reductio ad absurdum, we must have that $\alpha \in \rho_{R,X}(y)$ and $\alpha \notin \ran(\rho_{R,X})$, against the $R$-minimality of $x$.
+\end{proof}
+\begin{proposition}
+    If $y R x$, then $\rho_{R,X}(y) < \rho_{R,X}(x)$. Moreover, $\rho_{R,X}(x) = \inf\{\alpha: \forall y R x(\rho_{R,X}(y) < \alpha)\}$.
+\end{proposition}
+\begin{proof}
+    Notice that if $y R x$, then $\rho_{R,X}(y) < S(\rho_{R,X}(y)) < \sup\{S(\rho_{R,X}(y): y R x\} = \rho_{R,X}(x)$. \marginpar{manca il secondo fatto}
+\end{proof}
+\subsection{The Mostowski collapse}
+If $R \subseteq X^2$ is irreflexive, regular and well-founded, let
+\[ \pi_{R,X}(x) = \{\pi_{R,X}(y): y R x\} \]
+for any $x \in X$.
+\begin{definition}
+    $\overline{X} = \ran{\pi_{R,X}}$ is the \textbf{transitive collapse of $X$ and $R$}.
+\end{definition}
+\begin{proposition}
+    $\overline{X}$ is transitive.
+\end{proposition}
+\begin{proof}
+    If $\pi_{R,X}(x) \in \overline{X}$ and $y \in \pi_{R,X}(x)$, we get that $y = \pi_{R,X}(z)$ for some $z R y$ and hence $y \in \overline{X}$.
+\end{proof}
+\begin{remark}
+    Notice that $x R y \implies \pi_{R,X}(x) \in \pi_{R,X}(y)$.
+\end{remark}
+The extensional case is particularly interesting. Recall that $R \subseteq X^2$ is \textbf{extensional} if
+\[ \forall x,y,z \in X [z R x \iff z R y] \implies x = y. \]
+\begin{theorem}
+    If $R$ is irreflexive, regular, well-founded and extensional, then
+    \[ (X,R) \cong (\overline{X},\in). \]
+\end{theorem}
+\begin{proof}
+    It is enough to show that $\pi_{R,X}$ is injective. Towards a contradiction, let $x$ be $R$-minimal such that there exists a $y \neq x$ and $\pi_{R,X}(x) = \pi_{R,X}(y)$. Let $z R x$, as $\pi_{R,X}(z) \in \pi_{R,X}(y)$ there exists $w R y$ such that
+    \[ \pi_{R,X}(z) = \pi_{R,X}(w). \]
+    Since $x$ is $R$-minimal, this implies that $z = w$, hence $z R y$. The other way around shows that $z R y \implies z R x$. By extensionality, $x = y$, a contradiction. \\
+    We already know that $x R y \implies \pi_{R,X}(x) \in \pi_{R,X}(y)$. Suppose $\pi_{R,X}(x) \in \pi_{R,X}(y)$: there exists $z R y$ such that $\pi_{R,X}(x) = \pi_{R,X}(z)$. By injectivity, $x = z$, hence $x R y$.
+\end{proof}
+\begin{proposition}
+    If $R$ is a (strict) well-order on $X$, $\rho_{R,X} = \pi_{R,X}$.
+\end{proposition}
+\begin{proof}
+    Inductively, suppose $\pi_{R,X}(x) = \rho_{R,X}(x)$ for all $x R y$. Notice that all of the $\pi_{R,X}(x)$s are then ordinals, so $\pi_{R,X}(y)$ is a set of ordinals. Moreover, if $\pi_{R,X}(z) \in \pi_{R,X}(x) \in \pi_{R,X}(y)$, then by definition $z R x R y$ and as $R$ is transitive, $z R y$, hence $\pi_{R,X}(z) \in \pi_{R,X}(y)$, hence the latter is a transitive set of ordinals --- an ordinal. \\
+    By definition, $\pi_{R,X}(y) \geq S(\rho_{R,X}(x))$ for each $x R y$, so $\pi_{R,X}(y) \geq \rho_{R,X}(y)$. If $\pi_{R,X}(y) > \rho_{R,X}(y)$, then $\rho_{R,X}(y) = \pi_{R,X}(x) = \rho_{R,X}(x)$ for some $x R y$, a contradiction.
+\end{proof}
+\subsection{The aleph function}
+Since $\Card \sm \omega$ is a proper class, its transitive collapse is $\Ord$. The enumerating function is called $\aleph$, and can be defined recursively by 
+\begin{align*}
+    \aleph_0 &= \omega, \\
+    \aleph_{S(\alpha)} &= \aleph_{\alpha}^{+}, \\
+    \aleph_{\lambda} &= \sup\{\aleph_{\alpha}: \aleph < \lambda\}, \,\ \lambda \ \text{limit}.
+\end{align*}
+Recall that,
+\begin{theorem}
+    Let $f: \Ord \to \Ord$ be continuous and increasing, then
+    \[ \forall \alpha \exists \beta > \alpha (f(\beta) = \beta). \]
+\end{theorem}
+\begin{proof}
+    Fix $\alpha_{0} = S(\alpha)$ and $\alpha_{n+1} = f(\alpha_{n})$. Suppose $f(\alpha_0) = \alpha_0$, then $\alpha_0 > \alpha$ is the required fixed point. Otherwise if $\alpha < \alpha_1$ then for all $n$, $\alpha_n < f(\alpha_n)$. Hence,
+    \[ f(\sup_{n < \omega} \alpha_n) = \sup_{n < \omega} f(\alpha_n) = \sup_{n < \omega} \alpha_{n+1} = \sup_{n < \omega} \alpha_n, \]
+    so $\sup_{n < \omega} \alpha_n$ is the fixed point we were looking for.
+\end{proof}
+This implies that $\aleph$ has class-many fixed points.
+\subsection{The Von Neuman hierarchy}
+We can now fix $X = V$ and $R = \in$. In this case, we call $\rho_{\in, V} = \rank$ simply \textbf{rank}. Notice that $x \in y \implies \rank(x) < \rank(y)$ and $x \subseteq y \implies \rank(x) \subseteq \rank(y) \implies \rank(x) \leq \rank(y)$. We also get that $\rank(\alpha) = \alpha$ for every ordinal $\alpha$.
+\begin{proposition}
+    $\rank(\P(x)) = S(\rank(x))$ and $\rank(\cup x) = \sup\{\rank(y): y \in x\}$.
+\end{proposition}
+\begin{proof}
+    As $x \in \P(x)$, $\rank(x) < \rank(\P(x))$ hence $S(\rank(x)) \leq \rank(\P(x))$. On the other hand, $y \subseteq x \implies \rank(y) \leq \rank(x)$ hence $S(\rank(y)) \leq S(\rank(x))$ for each $y \in \P(x)$. By definition, $\rank(\P(x)) = \sup\{S(\rank(y)): y \subseteq x\} \leq S(\rank(x))$. \\
+    Notice that if $y \in x$, $y \subseteq \cup x$, hence $\rank(y) \leq \rank(\cup x)$ so $\sup\{\rank(y): y \in x\} \leq \rank(\cup x)$. On the other hand, if $y \in \cup x$ then $y \in z \in x$, so $S(\rank(y)) \leq \rank(z)$ and a fortiori $S(\rank(y)) \leq \sup\{\rank(z): z \in x\}$. This is true for every $y \in \cup x$, so $\rank(\cup x) \leq \sup\{\rank(y): y \in x\}$.
+\end{proof}
+The \textbf{Von Neuman hierarchy} is the class-function defined by $V_{\alpha} \define \{x: \rank(x) < \alpha\}$.
+\begin{theorem}
+    $V_{\alpha}$ is a transitive set, and moreover $V_{\alpha} = \bigcup_{\beta < \alpha} \P(V_{\beta})$.
+\end{theorem}
+\begin{proof}
+    Notice that if $y \in x \in V_{\alpha}$, $\rank(y) < \rank(x) < \alpha$ so $y \in V_{\alpha}$. It is enough to show the equality, so that $V_{\alpha}$ is a set.
+    Inductively, if $x \in V_{\alpha}$ then $\rank(x) < \alpha$ so $x \subseteq V_{\rank(x)}$ and hence $x \in \P(V_{\rank(x)})$, so $V_{\alpha} \subseteq \bigcup_{\beta < \alpha} \P(V_{\beta})$. On the other hand, if $x \in \bigcup_{\beta < \alpha} \P(V_{\beta})$ then $x \subseteq V_{\beta}$ for some $\beta < \alpha$, hence
+    \[ \rank(x) = \sup\{S(\rank(y)): y \in x\} \leq \beta < \alpha. \]
+\end{proof}
+The hierarchy has a clear structure.
+\begin{proposition}
+    $V_0 = \emptyset$ and for each $\alpha < \beta$, $V_\alpha \in V_\beta$ and $V_\alpha \subsetneq V_\beta$. Moreover,
+    \begin{align*}
+        \begin{cases}
+            V_0 &= \emptyset, \\
+            V_{S(\alpha)} &= \P(V_{\alpha}), \\
+            V_\lambda &= \bigcup_{\beta < \lambda} V_\beta, \, \, \lambda \, \text{limit}.
+        \end{cases}
+    \end{align*}
+\end{proposition}
+\begin{proof}
+    \marginpar{Da fare}
+\end{proof}
+\chapter[Cardinal arithmetic]{Something something: cardinal arithmetic}
+\section{The Axiom of Choice}
+In full generality, the statement $\AC_{I}(X)$ is `` if $X \neq \emptyset$ is a set, for each sequence of nonempty subsets $A_i \subseteq X$, $i \in I$, there exists a sequence $\langle a_i: i \in I \rangle$ such that $\forall i \in I$, $a_i \in A_i$. '' We will call $\AC_{I} = \forall X \AC_{I}(X)$, $\AC(X) = \forall I \AC_{I}(X)$ and $\AC = \forall I \forall X \AC_{I}(X)$.
+\begin{lemma}
+    If $X$ is well-orderable, then $\AC(X)$.
+\end{lemma}
+\begin{proof}
+    Just let $a_i = \min A_i$.
+\end{proof}
+\begin{lemma}
+    If there is a surjection $f: X \to Y$ and an injection $g: J \to I$, then $\AC_{I}(X) \implies \AC_{J}(Y)$.
+\end{lemma}
+\begin{proof}
+Let $\langle B_j: j \in J \rangle$ be a $J$-sequence of nonempty subsets of $Y$. For each $j \in J$, $f^{-1}[B_j]$ is a nonempty $J$-sequence of subsets of $X$. We need an $I$-sequence of subsets of $X$, so fix $A_i = f^{-1}[B_j]$ if $i = g(j)$, and $A_k = X$ for any other $k$. Under $\AC_{I}(X)$, we get a sequence $\langle a_i: i \in I\rangle$ such that for each $i \in I$, $a_i \in A_i$. Finally, for each $j \in J$ fix $b_j = f(a_{g^{-1}(i)})$. If $i = g(j)$,
+\[ b_j \in B_j \iff f[a_{i}] \in f[A_i] \iff a_i \in A_i.\]
+\end{proof}
+\begin{theorem}
+    $\AC(X)$ implies that $X$ is well-orderable.
+\end{theorem}
+\begin{proof}
+    Fix $I = \P(X)$ and a sequence $\langle Y: Y \in \P(X) \rangle$. $\AC_{\P(X)}(X)$ implies the existence of a $\P(X)$-sequence of elements of $X$, i.e. a choice function $C: \P(X) \to X$ such that $C(A) \in A$. We wish to construct a bijection from some ordinal $\alpha < \vert X \vert^+$.
+    \begin{equation*}
+        \begin{cases}
+            x_0 &= C(X), \\
+            x_{\alpha} = C(X \sm \{ x_{\beta}: \beta < \alpha \}).
+        \end{cases}
+    \end{equation*}
+    If the map were defined on each $\alpha < \vert X \vert^+$, we would get an injection from $\vert X \vert^+$ into $X$, a contradiction. Hence there is a $\overline{\alpha} < \vert X \vert^+$ such that
+    \[ X = \{ x_\alpha: \alpha < \overline{\alpha} \}. \]
+    $\alpha \to x_\alpha$ is the required bijection.
+\end{proof}
+Weaker forms of choice exist. For example, $\mathrm{DC}(X)$ is the statement ``if $R$ is a relation on $X$ such that $\forall x \exists y(x R y)$, then for any $x_0 \in X$ there is a $f: \omega \to X$ such that $f(0) = x_0$ and $\forall n(f(n) R f(n+1))$.''
+\begin{lemma}
+    $\AC \implies \mathrm{DC} \implies \AC_\omega$.
+\end{lemma}
+\subsection{Cardinality without choice}
+We give a more general framework for working with equivalence relations on classes with class-sized equivalence classes. This will allow us to deal with the relation ``there exists a bijection between us'' on $V$, which has --- unfortunately --- $V$-many equivalence classes, each the same size as $V$.
+Given a generic $E \subseteq X^2$, we'd love to have a choice function $C: X \to X$ such that $C(x) \in [x]_E$ and $x E y \implies C(x) = C(y)$. With cardinalities, this is precisely what we are doing --- we are choosing a preferred candidate amongst class-many equivalent ones. Without the axiom of choice, however, this simply looks like an impossible task. That's why we tap the so-called \textbf{Scott trick}. \\
+So, too bad, we have no choice function and also $[x]_E$ might be a proper class. We, however, have a very precise knowledge of how $V$ ``is done'': it is stratified, each set living in another set amongst its friends of same complexity (their rank), a bit like Dante's Inferno. We might want to relax our requirements: we want a nonempty set $\llbracket x \rrbracket_{E}$ such that $\llbracket x \rrbracket_E \subseteq [x]_E$ and $\llbracket x \rrbracket_E = \llbracket y \rrbracket_E \iff x E y$. Albeit less satisfying, this is doable.
+\begin{definition}
+    Given a set $x$, let
+    \[ \llbracket x \rrbracket_E = \{ y: y E x \land \forall z (z E x \implies \rank(y) \leq \rank(z))\}, \]
+    or equivalently, if $\alpha = \min\{\rank(y): y E x\}$,
+    \[  \llbracket x \rrbracket_E = [x]_E \cap V_{\alpha}. \]
+\end{definition}
+If $E$ is the ``there exists a bijection'' relation, we let $\Card(x) = \llbracket x \rrbracket_E$ if $x$ is not well-orderable, and $\Card(x) = \vert x \vert$ if it makes sense. \\
+Ta-dah! We can declare that $\Card(X) \leq \Card(Y)$ if and only if there is an injection from $X$ to $Y$, and then Cantor-Schroeder-Bernstein's theorem tells us that
+\[ \Card(X) = \Card(Y) \iff \Card(X) \leq \Card(Y) \land \Card(Y) \leq \Card(X). \]
+It turns out that the usual cardinality trichotomy we have in the $\AC$ setting is, basically, a divine gift.
+\begin{theorem}
+    \[ \AC \iff \forall X,Y \, \text{sets} \, \Card(X) \leq \Card(Y) \lor \Card(Y) \leq \Card(X). \]
+\end{theorem}
+\begin{proof}
+    The $\implies$ direction is true by cardinal trichotomy + Cantor-Schroeder-Bernstein. \\
+    Now let $X$ be a set, since $\vert X \vert^+ \not\leq X$ we get $X \leq \vert X \vert^+$ hence $X$ is well-orderable.
+\end{proof}
+\subsection{Elementary cardinal arithmetic}
+\begin{definition}[$\AC$]
+    If $\kappa$ and $\lambda$ are two cardinals, then $\kappa + \lambda = \vert \kappa \times \{0\} \cup \lambda \times \{1\}\vert$ and $\kappa \cdot \lambda = \vert \kappa \times \lambda\vert$.   
+\end{definition}
+Without $\AC$, we can define $\Card(X) + \Card(Y) = \Card(X \times \{0\} \cup Y \times \{1\})$ and $\Card(X) \cdot \Card(Y) = \Card(X \times Y)$. Notice that, in both cases, if $\kappa, \lambda \geq 2$ we get
+\[ \max(\kappa, \lambda) \leq \kappa + \lambda \leq  \kappa \cdot \lambda \leq \max(\kappa,\lambda) \cdot \max(\kappa,\lambda). \]
+The latter piece of the inequality requires some further exploration. We'd love to show that $\kappa \cdot \kappa = \kappa$ and that, atleast for well-orderable $X$s, $\Card(X) \cdot \Card(X) = \Card(X)$. There seems to be no sign of an obvious bijection, so we should take another route.
+\begin{definition}
+    The \textbf{Goedel well-ordering $<_G$} on $\Ord$ is defined as follows:
+    \begin{align*}
+        (\alpha, \beta) &<_G (\gamma, \delta) \\
+        &\iff \\
+        \max(\alpha,\beta) < \max(\gamma,\delta) \lor (\max(\alpha,\beta) = \max(\gamma,\delta) \land (\alpha,\beta) <_{lex} (\gamma,\delta)).
+    \end{align*}
+\end{definition}
+\begin{proposition}
+    $<_G$ is a well-order on $\Ord \times \Ord$.
+\end{proposition}
+\begin{proof}
+    ---
+\end{proof}
+This well-order extends the square enumeration of $\omega^2$, so you can probably see where this is going.
+\begin{theorem}
+    Fix an infinite cardinal $\kappa$, then $\ot(\kappa \times \kappa, <_G) = \kappa$, hence $\kappa \cdot \kappa = \kappa$.
+\end{theorem}
+\begin{proof}
+    First, notice that if $\ot(\kappa \times \kappa, <_G) = \kappa$, then $\vert \kappa \times \kappa \vert \leq \kappa$. Fix any element of $\kappa$ and you'll find an injection $\kappa \to \kappa \times \kappa$, hence $\kappa \leq \vert \kappa \times \kappa$, so $\kappa = \vert \kappa \times \kappa \vert = \kappa \cdot \kappa$. \\
+    Now, to the actual theorem. Any injection of the above is increasing, so $\kappa \leq \ot(\kappa \times \kappa, <_G)$. We proceed by induction on $\kappa$. \\
+    \textbf{Claim:} if $\alpha < \kappa$, then $\vert \alpha \times \alpha \vert < \kappa$. \\
+    If $\alpha$ is finite, this is clearly true. If $\alpha$ is infinite, $\vert \alpha \vert < \kappa$ hence by inductive hypothesis $\ot(\vert \alpha \vert \times \vert \alpha \vert, <_G) = \vert \alpha \vert$, i.e. $\vert \alpha \times \alpha \vert = \vert \alpha \vert < \kappa$. \\
+    Now fix any $\alpha,\beta < \kappa$, the set $\mathrm{pred}((\alpha,\beta),<_G)$ is a subset of $\gamma \times \gamma$ where $\gamma = \max{\alpha,\beta} +1$, so 
+    \[ \vert \mathrm{pred}((\alpha,\beta),<_G) \vert \leq \vert \gamma \times \gamma \vert < \kappa, \]
+    and hence $\ot(\mathrm{pred}((\alpha,\beta),<_G)) < \kappa$ --- otherwise, 
+    \[ \vert \mathrm{pred}((\alpha,\beta),<_G) \vert = \vert \ot(\mathrm{pred}((\alpha,\beta),<_G)) \vert \geq \kappa. \]
+    Now suppose $\ot(\kappa \times \kappa, <_G) > \kappa$, hence the isomorphism takes $\kappa$ to some $(\theta,\rho)$. The isomorphism is a bijection between $\kappa$ and $\mathrm{pred}((\theta,\rho),<_G)$, leading to a contradiction.
+\end{proof}
+This allows us to show that the two operations aforementioned are, in fact, trivial.
+\begin{corollary}
+    \[ \max(\kappa, \lambda) = \kappa + \lambda = \kappa \cdot \lambda. \]
+\end{corollary}
+With no $\AC$ at our disposal, we can't well-order things like ${}^{\kappa}X$ for generic $X$s, but we can do so in the finite case ${}^n X$, assuming there is a bijection between $X \times X$ and $X$ (this is, for example, true for cardinals, as shown in the previous theorem).
+\marginpar{Omissis perché non ho voglia di fare i diagrammi e non so bene come scrivere la 12esima slide di 4.17}
+\section{Cardinal exponentiation}
+\subsection{Basic facts, and CH}
+\begin{definition}
+    Let $\kappa$ and $\lambda$ be cardinals, then $\kappa^\lambda = \vert {}^{\lambda} \kappa \vert$.
+\end{definition}
+\begin{proposition}
+    If $2 \leq \kappa \leq \lambda$ and $\lambda$ is infinite, $2^\lambda = \kappa^\lambda = \lambda^\lambda$.
+\end{proposition}
+\begin{proof}
+    Notice that ${}^{\lambda}2 \subseteq {}^{\lambda}\kappa \subseteq {}^{\lambda}\lambda \subseteq \P(\lambda \times \lambda) = \P(\lambda)$ and the latter is in bijection with ${}^{\lambda}2$.
+\end{proof}
+\begin{lemma}
+If $\kappa \leq \nu$ and $\lambda \leq \mu$, $\kappa^\lambda \leq \nu^\mu$. Moreover, $(\kappa^\lambda)^\mu = \kappa^{\lambda \cdot \mu}$, $\kappa^{\lambda+\mu} = \kappa^\lambda \cdot \kappa^\mu$ and $(\kappa \cdot \lambda)^\mu = \kappa^mu \cdot \lambda^\mu$.
+\end{lemma}
+The Continuum Hypothesis is the statement $2^{\aleph_0} = \aleph_1$, while the Generalized Continuum Hypothesis is the statement $\forall \alpha \in \Ord (2^{\aleph_\alpha} = \aleph_{\alpha+1})$.
+\subsection{Generalized sums and products}
+Fix a sequence of cardinals $\langle \kappa_i: i \in I \rangle$, we define
+\begin{enumerate}
+    \item $\sum_{i \in I} \kappa_i = \left\vert \bigcup_{i \in I} \{i\} \times \kappa_i \right\vert$,
+    \item $\Pi_{i \in I} \kappa_i = \big\vert \times_{i \in I} \kappa_i \big\vert$.
+\end{enumerate}
+\begin{proposition}
+    If $\kappa_i \leq \lambda_i$ for each $i \in I$, then
+    \[ \sum_{i\in I} \kappa_i \leq \sum_{i \in I} \lambda_i. \]
+\end{proposition}
+\begin{proof}
+    For each $i \in I$, we have an injection $f_i: \kappa_i \to \lambda_i$. The function $F(i, \alpha) = (i, f_i(\alpha))$ is an injection witnessing the thesis.
+\end{proof}
+Moreover, we can recover a cardinal as a generalized sum,
+\[ \kappa = \sum_{i < \kappa} 1, \]
+and an exponential $2^\lambda$ as a generalized product,
+\[ 2^\lambda = \Pi_{i < \lambda} 2. \]
+The following result provides a useful way of rewriting a generalized sum.
+\begin{theorem}
+    Let $I$ be an infinite set, and $\langle \kappa_i: i \in I\rangle$ be a sequence of non-zero cardinals. Then
+    \[ \sum_{i \in I} \kappa_i = \vert I \vert \cdot \sup_{i \in I} \kappa_i. \]
+\end{theorem}
+\begin{proof}
+    The easy inclusion is $\bigcup_{i \in I} \{i\} \times \kappa_i \subseteq I \times \bigcup_{i \in I} \kappa_i$, which proves one inequality.
+    The other way around, for each $\alpha \in \sup_{i \in I}\kappa_i$ pick some $i(\alpha)$ such that $\alpha \in \kappa_{i(\alpha)}$. The map $\alpha \to (i(\alpha), \alpha)$ is an injection from $\sup_{i \in I}\kappa_i$ into $\bigcup_{i \in I} \{i\} \times \kappa_i$. $i \to (i,0)$ is another injection, so $\vert I \vert \leq \sum_{i \in I} \kappa_i$. Hence, 
+    \[ \vert I \vert \cdot \sup_{i \in I} \kappa_i = \max(\vert I \vert, \sup_{i \in I} \kappa_i) \leq \sum_{i \in I} \kappa_i.\]
+\end{proof}
+\begin{corollary}
+    If $I$ is an infinite set, and $\langle X_i: i \in I \rangle$ is a sequence of non-empty sets, then
+    \[ \vert \bigcup_{i \in I} X_i \vert \leq \vert I \vert \cdot \sup_{i \in I} \vert X_i \vert. \]
+\end{corollary}
+\begin{proof}
+    The result follows from the previous theorem once we notice that, fixing a bijection $f_i: X_i \to \vert X_i \vert$ and picking one $i(\alpha)$ such that $\alpha \in \kappa_{i(\alpha)}$,
+    \begin{align*}
+        \bigcup_{i \in I} X_i &\to \bigcup_{i \in I} \{i\} \times \vert X_i \vert, \\
+        \alpha &\to (i(\alpha, f_{i(\alpha)}(\alpha))
+    \end{align*}
+    is an injection, hence
+    \[ \vert \bigcup_{i \in I} X_i \vert \leq \sum_{i \in I} \vert X_i \vert = \vert I \vert \cdot \sup_{i \in I} \vert X_i \vert. \]
+\end{proof}
+One could only hope that \textit{these} operations don't trivialize as well. Luckily enough, Koenig showed that, at least in the obvious case, no triviality appears.
+\begin{theorem}[Koenig]
+    If $\kappa_i < \lambda_i$ for each $i \in I$, then
+    \[ \sum_{i \in I} \kappa_i < \Pi_{i \in I} \lambda_i. \]
+\end{theorem}
+\begin{proof}
+    We show that no $F: \sum_{i \in I} \kappa_i \to \Pi_{i \in I} \lambda_i$ can be surjective, hence $\sum_{i \in I} \kappa_i \not\geq \Pi_{i \in I} \lambda_i$. \\
+    Suppose such a $F: \sum_{i \in I} \kappa_i \to \Pi_{i \in I} \lambda_i$ exists. We proceed by diagonalization, building an element of $\Pi_{i \in I} \lambda_i$ that can't be the image of an element of $\sum_{i \in I} \kappa_i$. First of all, notice that
+    \[ \vert \{ F(i,\alpha)(i): \alpha \in \kappa_i \} \vert \leq \kappa_i < \lambda_i, \]
+    hence the set $\lambda_i \sm \{F(i,\alpha)(i): \alpha \in \kappa_i\}$ is non-empty for each $i$. This allows us to define
+    \[ f(i) = \min(\lambda_i \sm \{F(i,\alpha)(i): \alpha \in \kappa_i\}), \]
+    and claim that there is no $(i_0,\alpha_0)$ such that $f = F(i_0,\alpha_0)$. If there were, then
+    \[ f(i_0) = F(i_0,\alpha)(i_0) \in \{F(i_0,\alpha)(i_0): \alpha \in \kappa_{i_0}\}, \]
+    while by definition $f(i_0) = \min(\lambda_{i_0} \sm \{F(i_0,\alpha)(i_0): \alpha \in \kappa_{i_0}\})$, a contradiction.
+\end{proof}
+\subsection{Cofinality and regularity}
+\begin{definition}
+    A function $f: \alpha \to \beta$ is \textbf{cofinal (in $\beta$)} if its range is unbounded, i.e.
+    \[ \beta = \sup_{\nu < \alpha} f(\nu) \iff \forall \gamma < \beta \exists \delta < \alpha (f(\delta) \geq \gamma), \]
+    and the \textbf{cofinality} of an ordinal $\alpha$, denoted $\cof(\alpha)$, is the least ordinal admitting a cofinal function towards $\alpha$.
+\end{definition}
+\begin{proposition}
+    Let $f: \alpha \to \beta$ be cofinal and $g: \beta \to \gamma$ be cofinal and increasing, then $g \circ f$ is cofinal.
+\end{proposition}
+\begin{proof}
+    Let $\epsilon < \gamma$, there exists $\delta < \beta$ such that $g(\delta) \geq \epsilon$. By cofinality of $f$, there exists $\tau < \alpha$ such that $f(\tau) \geq \delta$, hence $g(f(\tau)) \geq g(\delta) \geq \epsilon$ since $g$ is increasing.
+\end{proof}
+\begin{proposition}
+    There exists $f: \cof(\alpha) \to \alpha$ cofinal and increasing.
+\end{proposition}
+\begin{proof}
+    Let $g: \cof(\alpha) \to \alpha$ be cofinal, and define inductively on $\cof(\alpha)$
+    \[ f(\lambda) = \max(g(\lambda), \sup\{f(\beta): \beta < \lambda\}):\]
+    $f$ is increasing and, since $f(\lambda) \geq g(\lambda)$ for each $\lambda < \cof(\alpha)$,
+    \[ \sup_{\nu < \cof(\alpha)} f(\nu) \geq \sup_{\nu < \cof(alpha)} g(\nu) = \alpha, \]
+    it is also cofinal.
+\end{proof}
+It is worth noting that as any bijection is cofinal, $\cof(\alpha) \leq \vert \alpha \vert$.
+\begin{corollary}
+    $\cof(\alpha)$ is a cardinal.
+\end{corollary}
+\begin{proof}
+    Suppose $\vert \cof(\alpha) \vert < \cof(\alpha)$, then the bijection $f: \vert \cof(\alpha) \vert \to \cof(\alpha)$ is cofinal. Without loss of generality we can assume the witnessing $g: \cof(\alpha) \to \alpha$ to be increasing, so $g \circ f: \vert \cof(\alpha) \vert \to \alpha$ would be cofinal, a contradiction.
+\end{proof}
+\begin{corollary}
+    $\cof(\cof(\alpha)) = \cof(\alpha)$.
+\end{corollary}
+\begin{proof}
+    Suppose $\cof(\cof(\alpha)) < \cof(\alpha)$, then the composition of the witnessing functions would be cofinal.
+\end{proof}
+\begin{remark}
+    Notice that $\cof(\alpha + 1) = 1$ for each $\alpha$, while $\cof(\omega) = \omega$.
+\end{remark}
+\begin{definition}
+    A limit ordinal $\alpha$ is \textbf{regular} if $\cof(\alpha) = \alpha$, otherwise we call it \textbf{singular}.
+\end{definition}
+\begin{remark}
+    Notice that (infinite) successor ordinals are always singular. On the other hand, regular ordinals are cardinals, so limit ordinals that aren't cardinals are singular (as $\cof(\lambda) \leq \vert \lambda \vert < \lambda$).
+\end{remark}
+Regular cardinals are much more common than one would expect.
+\begin{theorem}
+    If $\kappa \geq \omega$, $\kappa^+$ is regular.
+\end{theorem}
+\begin{proof}
+    Suppose $\cof(\kappa^+) < \kappa^+$ hence $\cof(\kappa^+) \leq \kappa$. Since $\kappa^+ = \sup_{i < \cof(\kappa^+)} f(i)$ for some cofinal $f$, we get that
+    \[ \kappa^+ = \vert \kappa^+ \vert = \vert \bigcup_{i < \cof(\kappa^+)} f(i) \vert \leq \cof(\kappa^+) \cdot \sup_{i < \cof(\kappa^+)} \vert f(i) \vert, \]
+    and since each $f(i) < \kappa^+$, we get $\vert f(i) \vert \leq \kappa$ and hence
+    \[ \kappa^+ \leq \kappa \cdot \kappa = \kappa, \]
+    a contradiction.
+\end{proof}
+So, we can't reach a singular cardinal with ``successor'' operations. This eerily resembles the successor-limit ordinal situation.
+\begin{theorem}
+    Suppose $\kappa$ is singular, then there is an increasing sequence of regular cardinals $\langle \kappa_i: i < \cof(\kappa) \rangle$ such that
+    \[ \kappa = \sup_{i < \cof(\kappa)} \kappa_i = \sum_{i < \cof(\kappa)} \kappa_i. \]
+\end{theorem}
+\begin{proof}
+    Fix an increasing cofinal function $f: \cof(\kappa) \to \kappa$. We inductively let $g(\lambda)$ be the smallest regular cardinal bigger than $f(\lambda)$ and all of the $g(\beta)$ with $\beta < \lambda$. Such a $g(\lambda)$ always exists for $\lambda < \cof(\kappa)$, since regular cardinals are unbounded below singular ones (just use the successor operation) and any smaller domain would contradict the minimality of $\cof(\kappa)$ (as $g$ is clearly cofinal). \\
+    By definition, $\kappa = \sup_{\lambda < \cof(\kappa)} g(\lambda)$. Finally, notice that
+    \[ \sum_{i < \cof(\kappa)} g(i) = \cof(\kappa) \cdot \sup_{i < cof(\kappa)} g(i) = \cof(\kappa) \cdot \kappa = \kappa. \] 
+\end{proof}
+The exponential function can show some bizarre behaviour, but --- at least for cofinalities --- its behaviour can sometimes be controlled.
+\begin{proposition}
+    $\kappa \geq \omega$ a cardinal,
+    \[ \kappa^{\cof(\kappa)} > \kappa. \]
+\end{proposition}
+\begin{proof}
+    If $\kappa$ is regular, then $\kappa^\kappa = 2^\kappa > \kappa$ is just Cantor's theorem. If $\kappa$ is singular, then $\kappa = \sup_{i < \cof(\kappa)} \kappa_i$, so
+    \[ \kappa = \sum_{i < \cof(\kappa)} \kappa_i < \Pi_{i < \cof(\kappa)} \kappa = \kappa^{\cof(\kappa)} \]
+    by Koenig's theorem.
+\end{proof}
+Coming back to CH, while we know that it is indipendent from ZF, we still can put some restrictions on $2^{\aleph_0}$. Namely,
+\begin{proposition}
+    $\cof(2^\kappa) > \kappa$.
+\end{proposition}
+\begin{proof}
+    Otherwise, by the previous proposition
+    \[ 2^\kappa < (2^\kappa)^{\cof(\kappa)} = 2^{\kappa \cdot \cof(\kappa)} = 2^{\kappa}, \]
+    a contradiction.
+\end{proof}
+Hence $\cof(2^{\aleph_0}) > \aleph_0$, so it can't be $\aleph_{\omega}$ or $\aleph_{\omega + \omega}$. \\
+Exponentiation is also well-behaved in the $\aleph$ case.
+\begin{theorem}[Hausdorff's formula]
+    \[ \aleph_{\alpha +1}^{\aleph_\beta} = \max(\aleph_{\alpha+1}, \aleph_{\alpha}^{\aleph_\beta}). \]
+\end{theorem}
+\begin{proof}
+    If $\aleph_{\alpha} < \aleph_{\beta}$, then $\aleph_{\alpha+1} \leq \aleph_{\beta}$ so
+    \[ \aleph_{\alpha}^{\aleph_{\beta}} = \aleph_{\alpha+1}^{\aleph_\beta} \geq \aleph_{\alpha+1}, \]
+    and we're done. If $\aleph_{\beta} < \aleph_{\alpha+1}$, then
+    \[ \aleph_{\alpha+1}^{\aleph_\beta} = \vert \bigcup_{\gamma < \aleph_{\alpha+1}} {}^{\aleph_beta} \gamma \vert, \]
+    since $\aleph_{\alpha+1} = \aleph_{\beta}^+$ is regular and hence every function from a smaller cardinal must have bounded range. Then,
+    \[ \aleph_{\alpha+1}^{\aleph_\beta} \leq \aleph_{\alpha+1} \cdot \sup_{\gamma < \aleph_{\alpha+1}} \vert {}^{\aleph_\beta} \gamma \vert \leq \aleph_{\alpha+1} \cdot \aleph_{\alpha}^{\aleph_\beta}. \]
+    The other inequality follows from monotonicity of the exponential.
+\end{proof}
+Finally, a theorem of Bukovsky-Hechler.
+\begin{theorem}
+    Let $\cof(2^{<\kappa}) > \kappa > \cof(\kappa)$, then $2^\kappa = 2^{<\kappa}$.
+\end{theorem}
+\begin{proof}
+    Since $\kappa$ is singular, there is an increasing sequence $\langle \kappa_i: i < \cof(\kappa) \rangle$ such that $\sup_{i < \cof(\kappa)} \kappa_i = \kappa$. Notice that, since
+    \[ 2^{<\kappa} = \vert \cup_{i < \kappa} 2^{i} \vert, \]
+    the sequence $\langle 2^{\kappa_i}: i < \cof(\kappa)\rangle$ must stabilize: if for every $\alpha < \cof(\kappa)$ there were a $\beta < \cof(\kappa)$ such that $2^{\kappa_\alpha} < 2^{\kappa_\beta}$, then the sequence would be cofinal in $2^{< \kappa}$ (each element stands below some $2^{\kappa_\gamma}$), against the hypothesis. Hence, there is a $\gamma < \cof(\kappa)$ such that for every $\beta \geq \gamma$, $2^{\kappa_\beta} = 2^{\kappa_\gamma}$. As $\cof(\kappa) < \kappa$, this $\kappa_\gamma$ can be taken to be greater or equal to $\cof(\kappa)$, hence
+    \[ 2^{\kappa} = 2^{\sum_{i < \cof(\kappa)} \kappa_i} = \Pi_{i < \cof(\kappa)} 2^{\kappa_i} \leq \Pi_{i < \cof(\kappa)} 2^{\kappa_\gamma} = 2^{\kappa_\gamma \cdot \cof(\kappa)} = 2^{\kappa_\gamma} \leq 2^{< \kappa}, \]
+    and the other inequality follows from the obvious injection.
+\end{proof}
+\subsection{Generalized operations}
+\begin{definition}
+    If $\alpha \in \Ord$, a \textbf{generalized operation on $X$} is a function $f: {}^{\alpha}X \to X$. $\alpha$ is the ariety of $f$, written as $\ar(f)$.
+\end{definition}
+\begin{definition}
+    If $Y \subseteq X$ and $\F$ is a family of generalized operations, then we denote by 
+    \[ \ClF(Y) = \bigcap \{Z \subseteq X: Y \subseteq Z \land \forall f \in \F \forall a \in {}^{\ar(f)}Z, f(a) \in Z\}. \]
+\end{definition}
+\begin{theorem}
+    Suppose $\F$ is a family of generalized operations on $X$ and $\lambda$ is a regular cardinal that bounds every ariety of elements of $\F$, i.e., $\lambda > \ar(f)$ for each $f \in \F$.
+    Then $\ClF(Y) = \bigcup_{\beta < \lambda} Y_\beta$ where $Y_0 = Y$,
+    \[ Y_{\beta+1} = Y_\beta \cup \{ f(a): f \in \F, a \in {}^{\ar(f)}Y_\beta \} \]
+    and the limit step is just the union.
+\end{theorem}
+\begin{proof}
+    $\overline{Y} = \bigcup_{\beta < \lambda} Y_\beta \subseteq \ClF(Y)$ follows from $\ClF(Y)$ being closed under $\F$. On the other hand, we need to show that if $f \in \F$ and $\alpha = \ar(f)$, then for each $a \in {}^{\alpha}\overline{Y}$, $f(a) \in \overline{Y}$. This follows from the fact that if $a \in {}^{\alpha}\overline{Y}$, then there is a $\beta$ such that $a \in {}^{\alpha}Y_\beta$.
+\end{proof}
+\begin{theorem}
+    Suppose $\F$ is a family of generalized operations on $X$, $\lambda$ is a regular cardinal such that $\lambda > \ar(f)$ for each $f \in \F$ and for a fixed $Y \subseteq X$ we have a cardinal $\kappa \geq \max(\lambda,\vert Y\vert, \vert \F \vert)$ such that $\kappa^{\vert \ar(f) \vert} \leq \kappa$ for each $f \in \F$. Then $\vert \ClF(Y) \vert \leq \kappa$.
+\end{theorem}
+\begin{proof}
+    Inductively, we show that $\vert Y_\beta \vert \leq \kappa$. If $\beta$ is zero or limit, this follows from basic set-theoretic considerations.
+    Notice that $Y_{\beta+1} = Y_\beta \cup \{f(a): f \in \F, a \in {}^{\ar(f)}Y_\beta$, so $\vert Y_{\beta + 1} \vert \leq \vert Y_\beta \vert + \vert \F \times \bigcup_{f \in \F} {}^{\ar(f)}Y_\beta \vert$ and by inductive hypothesis we get
+    \[ \vert Y_{\beta +1} \leq \kappa + \kappa \cdot \kappa^{\ar(f)} \leq \kappa. \]
+\end{proof}
+\begin{corollary}
+    Let $\F$ be a family of finitary operations on $X$, then $\vert \ClF(Y) \vert \leq \max(\omega, \vert \F \vert, \vert Y \vert)$.
+\end{corollary}
+\begin{proof}
+    This follows by taking $\lambda = \omega$ and $\kappa = \max(\omega, \vert \F \vert, \vert Y \vert)$.
+\end{proof}
+\begin{corollary}
+    Let $\F$ be a family of generalized operations such that $\ar(f) < \omega_1$ for each $f \in \F$ and $\vert \F \vert \leq \vert Y \vert^\omega$, then $\vert \ClF(Y) \vert \leq \vert Y \vert^\omega$.
+\end{corollary}
+\begin{proof}
+    Take $\lambda = \omega_1$ and $\kappa = \vert Y \vert^\omega$.
+\end{proof}
+\begin{example}
+    The latter corollary allows to obtain a bound on the cardinality of $\sigma$-algebras generated by a subset $Y$ of a given $\sigma$-algebra, that is $\leq \vert Y \vert^\omega$. The former shows that the cardinality of the substructure generated by a subset $Y$ inside a given $L$-structure has cardinality $\leq \max(\omega, \vert L \vert, \vert Y \vert)$.
+\end{example}
+\subsection{Clubs}
+Throughout this subsection, fix a regular cardinal $\kappa > \omega$.
+\begin{definition}
+    A \textbf{club of $\kappa$} is a closed and unbounded subspace of $\kappa$.
+\end{definition}
+\begin{definition}
+    The filter of clubs is defined to be
+    \[ \mathrm{Club}(\kappa) = \{ X \subseteq \kappa: \exists C \, \text{club} \, C \subseteq X\}. \]
+\end{definition}
+The following result shows that it is, indeed, a filter.
+\begin{proposition}
+    If $C$, $D$ are clubs, then $C \cap D$ is a club as well.
+\end{proposition}
+\begin{proof}
+    The intersection of closed subspaces is closed. Using that $C$ and $D$ are unbounded, once we fix $\alpha < \kappa$ we can build an increasing sequence of cardinals $\alpha < \gamma_0 < \delta_0 < \gamma_1 < \delta_1 < \dots$ where each $\gamma_i \in C$ and $\delta_i \in D$. Since $C$ and $D$ are closed, $\beta = \sup_{i}\gamma_i = \sup_{i}\delta_i \in C \cap D > \alpha$.
+\end{proof}
+\begin{proposition}
+    If $\lambda < \kappa$ and $\langle C_i: i < \lambda\rangle$ are clubs of $\kappa$, then $\bigcap_{i < \lambda} C_i$ is a club of $\kappa$. 
+\end{proposition}
+\begin{proof}
+    Arbitrary intersections of closed subspaces are closed. By induction on $\lambda$: if $\lambda = 0$ or $\lambda = 1$, we are done. If $\lambda$ is successor, then
+    \[ \bigcap_{i < \lambda} C_i = \bigcap_{i < \lambda-1} C_i \cap C_{\lambda} \]
+    and the two subspaces are closed by inductive hypothesis. If $\lambda$ is limit, we can assume that for $\alpha < \beta < \lambda$, $C_\beta \subseteq C_\alpha$, i.e. that the sequence is decreasing.
+    For any $\delta < \kappa$, we can build an increasing sequence $\mu_i$ where $\delta < \mu_0$ and each $\mu_i$ belongs to $C_i$. Notice that since the sequence is definitely in each $C_i$ and they are closed,
+    \[ \mu = \sup_{i < \lambda} \mu_i \in \bigcap_{i < \lambda} C_i, \]
+    where $\mu < \kappa$ because $\kappa$ is regular.
+\end{proof}
+The intersection of $\kappa$-many clubs might not be unbounded.
+\begin{theorem}
+    Let $\langle C_\alpha: \alpha < \kappa \rangle$ be a sequence of clubs of $\kappa$. Then
+    \[ \Delta_{\alpha < \kappa} C_\alpha \define \{ \beta < \kappa: \forall \alpha < \beta(\beta \in C_\alpha)\} = \bigcap_{\alpha < \kappa} (C_\alpha \cup S(\alpha)) \]
+    is a club of $\kappa$.
+\end{theorem}
+\begin{proof}
+    Notice that $C_\alpha \cup S(\alpha) = C_\alpha \cup [0, \alpha]$ is closed, hence the intersection is closed.
+    Now pick any $\beta < \kappa$. If $\gamma < \kappa$, then $\bigcap_{\alpha < \gamma} C_\alpha$ is a club of $\kappa$, so we can build an increasing sequence $\beta_n$ such that $\beta_0 = \beta$ and for each $n$, $\beta_{n+1} \in \bigcap_{\alpha \leq \beta_n} C_\alpha$. Let $\gamma = \sup_{i}\beta_i$. For each $m > n$, $\beta_m \in C_{\beta_n}$, so once again we get that $\beta \in \bigcap_{n < \omega} C_{\beta_n} = \bigcap_{\nu < \beta} C_\nu$, hence $\beta \in \Delta_{\alpha < \kappa} C_\alpha$.
+\end{proof}
+If $f: {}^k \kappa \to \kappa$, we denote by $\C(f) = \{\alpha < \kappa: \forall \beta_1, \dots \beta_k \in \alpha, f(\beta_1,\dots\beta_k) \in \alpha\}$ the set of ordinals closed under $f$.
+\begin{proposition}
+    $\C(f)$ is a club of $\kappa$.
+\end{proposition}
+\begin{proof}
+    \textbf{Closure:} let $\alpha \in \kappa \sm \C(f)$, and let $\epsilon < \alpha$ witness so. In particular, $f(\epsilon) > \alpha$. We claim that $(\epsilon, \alpha+1) \subseteq \kappa \sm \C(f)$, hence the latter is open and $\C(f)$ is closed. To see so, pick any $\epsilon < \mu < \alpha$ and notice that $\epsilon$ witnesses that $f(\epsilon) > \alpha > \mu$, hence that $\mu \in \kappa \sm \C(f)$. \\
+    \textbf{Unboundedness:} let $\alpha < \kappa$, and define $\gamma_0 = \alpha$ and $\gamma_{i+1} = \sup\{f(\beta_1, \dots \beta_k): \beta_1, \dots \beta_k \in \gamma_i\}$. Notice that $\gamma_{i+1} < \kappa$, otherwise $\vert \gamma_i \vert^n = \vert \gamma_i \vert$ would be the cofinality of $\kappa$. Hence $\alpha < \gamma = \sup_{i} \gamma_i < \kappa$ and $\gamma \in \C(f)$.
+\end{proof}
+\begin{proposition}
+    If $C$ is a club of $\kappa$, then there exists $f: \kappa \to \kappa$ such that $\C(f) \subseteq C$.
+\end{proposition}
+\begin{proof}
+    Let $g$ be its enumerating function, and fix $f(\alpha) = g(\alpha+1)$. Since $\alpha \leq g(\alpha) < f(\alpha)$, if $\gamma$ is closed under $f$ then $\sup(C \cap \gamma) = \gamma$, hence $\gamma \in C$. By the arbitrariety of $\gamma$, $\C(f) \subseteq C$.
+\end{proof}
+\begin{corollary}
+    If $\F$ is a family of operations on $\kappa$ and $\vert \F \vert < \kappa$, then $\bigcap_{f \in \F} \C(f)$ is a club of $\kappa$.
+\end{corollary}
+\subsection{Stationary sets}
+We call $A \subseteq \kappa$ is \textbf{stationary} if $A \cap C \neq \emptyset$ for each $C$ club of $\kappa$.
+For example, $\mathrm{COF}(\lambda) = \{\alpha < \kappa: \cof(\alpha) = \lambda\}$ is a stationary set for any regular $\lambda < \kappa$.
+\begin{theorem}
+    Let $S \subseteq \kappa$ be stationary and $F: S \to \kappa$ be such that, for every $\alpha \in S$, $\alpha \neq 0 \implies F(\alpha) < \alpha$. Then there exists a stationary $S' \subseteq S$ such that $F$ is constant on $S'$.
+\end{theorem}
+\begin{proof}
+    Suppose that $F^{-1}(\alpha)$ is not stationary for all $\alpha < \kappa$, that is for every $\alpha < \kappa$ there is a club $C_\alpha$ disjoint from $F^{-1}\{\alpha\}$. Since $C = \Delta_{\alpha < \kappa} C_\alpha \sm \{0\}$, $S \cap C \neq \emptyset$ hence we can pick some $\alpha \in S\cap C$. Notice that, by definition of diagonal intersection, $F(\alpha) < \alpha$ implies that $\alpha \in C_{F(\alpha)}$. Since $C_{F(\alpha)}$ is disjoint from $F^{-1}\{F(\alpha)\}$, we get that $\alpha \notin F^{-1}\{F(\alpha)\}$, a contradiction.
+\end{proof}
+\subsection{Inaccessible Cardinals}
+\begin{definition}
+    A cardinal $\kappa$ is said to be
+    \begin{enumerate}
+        \item \textbf{strong limit} if $2^\lambda < \kappa$ for each $\lambda < \kappa$,
+        \item \textbf{weakly inaccessible} if it is regular and limit,
+        \item \textbf{strongly inaccessible} if it is regular and \textit{strong} limit.
+    \end{enumerate}
+\end{definition}
+\chapter[Models of set theory]{Something something: models of set theory}
+By a ``model of ZFC'' we will hereby mean a structure in the first order language $L= \{\in\}$. We do know that $V$, the sort of prototypical model of ZFC, is stratified in the Von Neuman hierarchy,
+\[ V = \bigcup_{\alpha \in \Ord} V_\alpha, \]
+so a natural question is: do we need \textit{all} of the $\alpha$s in $\Ord$ to get a satisfying model of set theory?
+\begin{proposition}
+    Each nonempty transitive set $M$ is a model for the axioms of extensionality and foundation.
+\end{proposition}
+\begin{proof}
+    Suppose $x \neq y$, then by extensionality (of $V$) there is a $z \in x$, $z \notin y$: by transitivity, $z \in M$. \\
+    Now suppose $x \in M$ is nonempty, then by foundation (of $V$) there is a $y \in x$ such that $y \cap x = \emptyset$. By transitivity, $y \in M$.
+\end{proof}
+Okay, so this was easy. Since each $V_\alpha$ is transitive, each $V_\alpha$ models extensionality + foundation.
+\begin{theorem}
+    If $\lambda$ is limit, then $V_\lambda$ models pairing, union, powerset and separation.
+\end{theorem}
+\begin{proof}
+    The easiest way to do so is by showing that the \textit{actual} pair, union and powerset we can find in $V$ belong to $V_\lambda$. \\
+    \textbf{Pair:} notice that if $\rank(a), \rank(b) < \lambda$, $\rank(\{a,b\}) = \max\{S(\rank(a)), S(\rank(b))\} < \lambda$ since $\lambda$ is limit. \\
+    \textbf{Union:} recall that if $\rank(x) < \lambda$, $\rank(\cup x) = \sup\{\rank(y): y \in x\} \leq \rank(x) < \lambda$. \\
+    \textbf{Powerset:} as $\rank(\P(x)) = S(\rank(x))$ and $\lambda$ is limit, $\rank(\P(x)) < \lambda$. \\
+    \textbf{Separation:} fix a formula $\phi(x,y,z)$, and for any given tuple $c$ of elements of $V_\lambda$ and set $a \in V_\lambda$ notice that 
+    \[ d = \{b \in V_\lambda: b \in a \land V_\lambda \models \phi[a,b,c]\} \]
+    has rank $< \lambda$ (as it is a subset of $a$) and fulfills its role.
+\end{proof}
+Replacement is trickier.
+\begin{theorem}
+    $V_\omega$ is a model of ZFC minus the axiom of infinity.
+\end{theorem}
+\begin{proof}
+    \textbf{Choice:} each $V_n$ is finite hence well-orderable. \\
+    \textbf{Replacement:} if $A \in V_\omega$ and $F: A \to V_\omega$, $F[A]$ is finite and hence belongs to $V_\omega$.
+\end{proof}
+We've got ourselves a model of ZFC, but lost Infinity. We can't apparently have two birds with one stone: Replacement and Infinity seem to exclude one another.
+\begin{theorem}
+    For any $\lambda > \omega$, $V_\lambda$ is a model of ZF minus Replacement.
+\end{theorem}
+\begin{proof}
+    Well, $\omega \in V_\lambda$.
+\end{proof}
+\begin{theorem}
+    Assuming choice, $V_\lambda$ also satisfies choice.
+\end{theorem}
+\begin{proof}
+    Any well-order on $x \in V_\lambda$ has rank smaller than $\lambda$.
+\end{proof}
+To find satisfying models, we venture into unknown lands.
+\begin{theorem}
+    Assume AC. If $\kappa$ is strongly inaccessible, then $\vert V_\alpha \vert < \kappa$ for each $\alpha < \kappa$, in particular each $x \in V_\kappa$ has cardinality $< \kappa$.
+\end{theorem}
+\begin{proof}
+    By induction on $\alpha$,
+    \[ \vert V_{\alpha + 1} = 2^{\vert V_\alpha \vert} < \kappa \]
+    because $\kappa$ is strong limit, and 
+    \[ \vert V_\alpha \vert \leq \vert \alpha \vert \cdot \sup_{\beta < \alpha} \vert V_\beta \vert < \kappa \]
+    by regularity.
+\end{proof}
+And finally, the bad guy.
+\begin{theorem}
+    Assume AC. If $\kappa$ is strongly inaccessible, then $V_\kappa \models ZFC$.
+\end{theorem}
+\begin{proof}
+    We just need to check the Replacement bit. We need to show that $V_\kappa$ satisfies
+    \[ \forall z \forall w [ \forall x \in z \exists ! \phi(x,y,z,w) \implies \exists u \forall y(y \in u \iff \exists x \in z \phi(x,y,z,w))]. \]
+    Fix $z, w \in V_\kappa$, and suppose $V_\kappa \models \forall x \in z \exists ! y \phi(x,y,z,w)$. We have a map $F: z \to V_\kappa$ that sends $x$ to the unique $y$ witnessing this. If we show $\ran(F) \in V_\kappa$, then we're done. \\
+    Call $G: z \to \kappa$ the map that sends $a$ to the least $\alpha < \kappa$ such that $F(a) \in V_\alpha$. As $\vert z \vert < \kappa$, $\ran(G) < \kappa$ and hence $\ran(G) \subseteq \gamma$ for some $\gamma < \kappa$. Hence, $\ran(F) \subseteq V_\gamma$, so in particular $\ran(F) \in V_\kappa$.
+\end{proof}
+\section{Universes}
+Certain theories require different foundations. One of such is the so-called theory of \textbf{universes.}
+\begin{definition}
+    A universe is a transitive set $\U$ closed under $\P$, that contains $\omega$ and such that
+    \[ \forall I \in \U \forall f: I \to \U \, \bigcup_{i \in I} f(i) \in \U. \]
+\end{definition}
+\begin{theorem}
+    $\U$ is a universe if and only if $\U = V_\kappa$ for some strongly inaccessible $\kappa$.
+\end{theorem}
+\begin{proof}
+    $\implies$. Notice that if $x \subseteq y \in \U$, then $x \in \U$. This follows since $\P(y) \in \U$ and $\U$ is transitive. Notice that $\U$ is also closed under binary unions, since $2 \in \omega \in \U$ and for any $x, y \in \U$,
+    \[ x \cup y = \bigcup_{i \in 2} f(i) \]
+    where $f(0) = x$ and $f(1) = y$. Notice that $\U$ is closed under pairs, under cartesian products and exponentiations. If $f: I \to \U$ and $I \in \U$, then both $f \in \U$ and $\ran(f) \in \U$, as
+    \[ \ran(f) = \bigcup_{i \in I} \{f(i)\} \]
+    and $f \subseteq I \times \ran(f)$. \\
+    Now, let $\kappa = \U \cap \Ord$. $\kappa$ is limit and $\kappa \notin \U$. First, we show that $\kappa$ is regular: if $\gamma < \kappa$ and $f: \gamma \to \kappa$, then
+    \[ \sup \ran(f) = \bigcup_{\alpha < \gamma} f(\alpha) \in \U, \]
+    hence it can't be $\kappa$, so the function can't be cofinal. \\
+    We show it is strong limit: if $2^\lambda \geq \kappa$ for some $\lambda < \kappa$, we would get a surjection $\P(\lambda) \to \kappa$, but as $\P(\lambda) \in \U$, so would $\kappa$. \\
+    Finally, let $\overline{\kappa} = \{\alpha < \kappa: V_\alpha \in \U\}$. $\overline{\kappa}$ must be limit. If $\overline{\kappa} < \kappa$, then $\overline{\kappa} \in \U$ so $\alpha \to V_\alpha$ is a function witnessing that $V_{\overline{\kappa}} = \bigcup_{\alpha < \overline{\kappa}} V_\alpha \in \U$, hence $\overline{\kappa} \in \overline{\kappa}$. This shows that $V_\kappa \subseteq \U$. \\
+    On the other hand, let $x \in \U \sm V_\kappa$ be of least rank --- then $\rank(x) = \kappa$ and the function $x \to \kappa$, $y \to \rank(y)$ is cofinal, so $\kappa = \sup_{y \in x} \rank(y) \in \U$, a contradiction. \\
+    $\impliedby$. The trickier clause is that if $f: I \to V_\kappa$ and $I \in V_\kappa$, then $\bigcup_{i \in I} f(i) \in V_\kappa$. However, since $\vert I \vert < \kappa$ the function $I \to \kappa$, $i \to \rank(f(i))$ must be bounded, say $\ran(f) \subseteq V_\alpha$ for some $\alpha < \kappa$. Hence
+    \[ \bigcup_{i \in I} f(i) \subseteq V_\alpha, \]
+    so $\rank(\bigcup_{i \in I} f(i)) \leq \alpha < \kappa$.
+\end{proof}
+\section{Here be dragons}
+\begin{theorem}
+    If $ZFC$ is consistent, there exists a model $(N,\in^N) \models ZFC$ such that $\in^N$ is not well-founded on $N$.
+\end{theorem}
+\begin{proof}
+    Recall that foundation is equivalent, at least under Choice, to the statement
+    \begin{quote}
+        There is no strictly decreasing function $F: \omega^{M} \to M$ such that $\forall n \in \omega^{M}, F(n+1) \in^M F(n)$.
+    \end{quote}
+    First of all, notice that if $(M,\in^M) \models ZFC$ then, of course, such an $F$ \textit{can't} belong to $M$. We, however, look at $M$ from a privileged point of view, that of a \textit{bigger} model of set theory, the ``universe'' we live in. A universe where the Compactness theorem is alive and ready to extend its claws on poor $(M, \in^M)$. \\
+    Fix $L' = \{\in\} \cup \{c_n: n \in \omega\}$, and consider the theory $T' = ZFC \cup \{ c_{n+1} \in c_n: n < \omega \}$. Any finite piece of it, $S \subseteq T$, is satisfiable --- namely by interpreting the finitely many $c_k$s appearing in $S$ in reverse order (so if $c_1, c_2, c_3$ appear in $S$, then we interpret $c_1^M = 3, c_2^M = 2, c_3^M = 1$). Hence, by the compactness theorem, there is a model $(N, \in^N)$ that satisfies $T'$. Finally, let $F: \omega^N \to N$ be $n \to c_n^N$.
+\end{proof}
+\printbibliography
+\end{document}
